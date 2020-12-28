@@ -1,0 +1,12 @@
+﻿label {
+    color: black;
+}
+
+    label.Information {
+        color: crimson;
+    }
+
+    label.Title {
+        font-size: large;
+        padding: 20,0,0,0;
+    }
