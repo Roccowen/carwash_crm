@@ -2,43 +2,66 @@
 using System.Text.RegularExpressions;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using carwash.Models;
 
 namespace carwash
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AuthorizationPage : ContentPage
     {
-        private static Regex numberCheck;
         public AuthorizationPage()
         {
             InitializeComponent();
-            numberCheck = new Regex(@"(8[0-9]{10})|(\+7[0-9]{10})");
         }
         public void AuthorizationClicked(object sender, EventArgs e)
         {
-            if (numberCheck.IsMatch(NumberPlaceholder.Text) && PasswordPlaceholder.Text != null)
+            if (Test.useApi)
             {
-                //var response = new HttpClient().GetAsync();
-                if (new Random().Next(0, 10) > 7)
+                if (numberCheck.IsMatch(NumberPlaceholder.Text) && PasswordPlaceholder.Text != null)
                 {
-                    App.Current.Properties.Clear();
-                    App.Current.Properties.Add("number", NumberPlaceholder.Text);
-                    App.Current.Properties.Add("password", PasswordPlaceholder.Text);
-                    ResultLabel.Text = "Успешная попытка авторизации";
-                    Navigation.PopModalAsync();
+                    var content = new FormUrlEncodedContent(new[]
+                    {
+                            new KeyValuePair<string, string>("phone", ClearPhone(NumberPlaceholder.Text)),
+                            new KeyValuePair<string, string>("password", PasswordPlaceholder.Text),
+                        });
+                    var response = AppData.AppHttpClient.PostAsync(@"/api/login", content);
+                    if (response.Result.IsSuccessStatusCode)
+                    {
+                        AppData.Token = JsonSerializer.Deserialize<RegistrationAnswer>(response.Result.Content.ReadAsStringAsync().Result).Data["token"];
+                        App.Current.Properties.Add("phone", ClearPhone(NumberPlaceholder.Text));
+                        App.Current.Properties.Add("password", PasswordPlaceholder.Text);
+                        Navigation.PopModalAsync();
+                    }
+                    else
+                        ResultLabel.Text = "Неверный логин или пароль";
                 }
-                else
+            }
+            if (Test.useLocal)
+            {
+                if (numberCheck.IsMatch(NumberPlaceholder.Text) && PasswordPlaceholder.Text != null)
                 {
-                    ResultLabel.Text = "Неверный логин или пароль";
+                    if (new Random().Next(0, 10) > 5)
+                    {
+                        App.Current.Properties.Add("phone", ClearPhone(NumberPlaceholder.Text));
+                        App.Current.Properties.Add("password", PasswordPlaceholder.Text);
+                        ResultLabel.Text = "Успешная попытка авторизации";
+                        Navigation.PopModalAsync();
+                    }
+                    else
+                    {
+                        ResultLabel.Text = "Неверный логин или пароль";
+                    }
                 }
             }
         }
+        private static Regex numberCheck = new Regex(@"(8[0-9]{10})|(\+7[0-9]{10})");
         public void ToRegistration(object sender, EventArgs e)
         {
             Navigation.PushModalAsync(new RegistrationPage());
@@ -49,6 +72,14 @@ namespace carwash
                 ResultLabel.Text = "Номер должен начинаться с +7 или 8";
             else
                 ResultLabel.Text = "";
+        }
+        private string ClearPhone(string phone)
+        {
+            if (phone.ToCharArray()[0] == '+')
+                return phone.Replace("+7", "");
+            if (phone.ToCharArray()[0] == '8')
+                return phone.Replace("8", "");
+            return "";
         }
     }
 }

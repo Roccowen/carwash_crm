@@ -18,7 +18,7 @@ namespace carwash
             object password = null;
             if (App.Current.Properties.TryGetValue("name", out name) && App.Current.Properties.TryGetValue("password", out password))
                 Navigation.PushModalAsync(new AuthorizationPage());
-            if (TestData.withRegistration)
+            if (Test.withRegistration)
                 Navigation.PushModalAsync(new AuthorizationPage());
             Detail = new NavigationPage(new AboutPage());
             IsPresented = false;

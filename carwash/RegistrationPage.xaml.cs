@@ -4,15 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Threading;
+using carwash.Models;
 
 namespace carwash
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]   
     public partial class RegistrationPage : ContentPage
     {
         public RegistrationPage()
@@ -28,7 +30,7 @@ namespace carwash
                 PasswordCPlaceholder.Text == PasswordPlaceholder.Text &&
                 NamePlaceholder.Text != "")
             {
-                if (TestData.useApi)
+                if (Test.useApi)
                 {
                     var content = new FormUrlEncodedContent(new[]
                     {
@@ -38,21 +40,18 @@ namespace carwash
                         new KeyValuePair<string, string>("name", NamePlaceholder.Text)
                     });
                     var response = AppData.AppHttpClient.PostAsync(@"/api/register", content);
-                    AppData.Token = response.Result.Headers.First(h => h.Key == "token").Value.ToString();
-                    ResultLabel.Text = AppData.Token;
-                    Thread.Sleep(5000);
-                    App.Current.Properties.Add("phone", ClearPhone(NumberPlaceholder.Text));
-                    App.Current.Properties.Add("password", PasswordPlaceholder.Text);
-                    Navigation.PopAsync();
-                    Navigation.PopModalAsync();
+                    if (response.Result.IsSuccessStatusCode)
+                    {
+                        AppData.Token = JsonSerializer.Deserialize<RegistrationAnswer>(response.Result.Content.ReadAsStringAsync().Result).Data["token"];
+                        DelError("Проблемы с соединением");
+                        Navigation.PopModalAsync();
+                    }
+                    else
+                        AddError("Проблемы с соединением");
+
                 }
-                if (TestData.useLocal)
-                {                   
-                    App.Current.Properties.Add("phone", NumberPlaceholder.Text);
-                    App.Current.Properties.Add("password", NumberPlaceholder.Text);
-                    Navigation.PopAsync();
-                    Navigation.PopModalAsync();
-                }
+                if (Test.useLocal)                
+                    Navigation.PopModalAsync();                
             }
         }
         private void toBack(object sender, EventArgs e)
