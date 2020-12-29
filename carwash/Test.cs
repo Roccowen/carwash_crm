@@ -7,7 +7,7 @@ namespace carwash
     public static class Test
     {
         public static bool withRegistration = true;
-        public static bool useApi = false;
+        public static bool useApi = true;
         public static bool useLocal = !useApi;
         public static void InitialParams()
         {

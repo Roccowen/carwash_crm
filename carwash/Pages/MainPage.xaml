@@ -10,7 +10,7 @@
                   Title="MainPage">
 
     <MasterDetailPage.Resources>
-        <StyleSheet Source = "styles.css"/>
+        <StyleSheet Source = "/styles.css"/>
     </MasterDetailPage.Resources>
 
     <MasterDetailPage.Master>
@@ -21,6 +21,9 @@
                         Clicked="SettingsButtonClick"/>
                     <Button Text="О нас"
                         Clicked="AboutButtonClick"/>
+                    <Button Text="Рабочие"
+                            x:Name="WorkersButton"
+                            Clicked="WorkersButton_Clicked"/>
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>

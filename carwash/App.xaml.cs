@@ -10,7 +10,7 @@ namespace carwash
         {
             InitializeComponent();
             Test.InitialParams();
-            AppData.AppHttpClient.BaseAddress = AppData.ApiRoute;
+            
             MainPage = new NavigationPage(new MainPage());
         }
 

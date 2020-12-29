@@ -1,4 +1,5 @@
-﻿using System;
+﻿using carwash.Pages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -32,6 +33,12 @@ namespace carwash
         public void AboutButtonClick(object sender, EventArgs e)
         {
             Detail = new NavigationPage(new AboutPage());
+            IsPresented = false;
+        }
+
+        private void WorkersButton_Clicked(object sender, EventArgs e)
+        {
+            Detail = new NavigationPage(new UsersWorkersPage());
             IsPresented = false;
         }
     }

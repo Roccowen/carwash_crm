@@ -6,6 +6,7 @@ namespace carwash.Models
 {
     public class User
     {
-        //public int Id 
+        public string Name { get; set; }
+        public string Phone { get; set; }
     }
 }
