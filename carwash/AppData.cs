@@ -8,7 +8,7 @@ namespace carwash
 {
     public partial class AppData
     {
-        public static Uri ApiRoute = new Uri(@"https://e2716a8fc3ba.ngrok.io");
+        public static Uri ApiRoute = new Uri(@"http://194.67.93.122");
         public static string csspath = "/Styles/Styles.css";
         public static HttpClient AppHttpClient = new HttpClient() 
         { 

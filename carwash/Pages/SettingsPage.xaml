@@ -9,7 +9,6 @@
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>
-
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Количество боксов"/>
@@ -22,7 +21,6 @@
             <Button Text="Добавить нового сотрудника"
                     x:Name="AddNewEmploeeButton"
                     Clicked="AddNewEmploeeButton_Clicked"/>
-            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

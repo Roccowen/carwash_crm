@@ -17,98 +17,82 @@ namespace carwash
     [XamlCompilation(XamlCompilationOptions.Compile)]   
     public partial class RegistrationPage : ContentPage
     {
+        private ErrorController errorController;
         public RegistrationPage()
         {
             InitializeComponent();
-            errorSet = new SortedSet<string>();
+            errorController = new ErrorController(ResultLabel);
         }
 
         private void Registration(object sender, EventArgs e)
         {
-            if (numberCheck.IsMatch(NumberPlaceholder.Text) && 
-                passwordCheck.IsMatch(NumberPlaceholder.Text) && 
-                PasswordCPlaceholder.Text == PasswordPlaceholder.Text &&
-                NamePlaceholder.Text != "")
+            if (NumberPlaceholder.Text != null &&
+                PasswordPlaceholder != null &&
+                PasswordCPlaceholder.Text != null &&
+                NamePlaceholder.Text != null)
             {
-                if (Test.useApi)
+                if (numberCheck.IsMatch(NumberPlaceholder.Text) &&
+               passwordCheck.IsMatch(PasswordPlaceholder.Text) &&
+               PasswordCPlaceholder.Text == PasswordPlaceholder.Text &&
+               NamePlaceholder.Text != "")
                 {
-                    var content = new FormUrlEncodedContent(new[]
+                    if (Test.useApi)
                     {
+                        var content = new FormUrlEncodedContent(new[]
+                        {
                         new KeyValuePair<string, string>("phone", ClearPhone(NumberPlaceholder.Text)),
                         new KeyValuePair<string, string>("password", PasswordPlaceholder.Text),
                         new KeyValuePair<string, string>("c_password", PasswordCPlaceholder.Text),
                         new KeyValuePair<string, string>("name", NamePlaceholder.Text)
                     });
-                    var response = AppData.AppHttpClient.PostAsync(@"/api/register", content);
-                    if (response.Result.IsSuccessStatusCode)
-                    {
-                        AppData.Token = JsonSerializer.Deserialize<RegistrationAnswer>(response.Result.Content.ReadAsStringAsync().Result).Data["token"];
-                        DelError("Проблемы с соединением");
-                        Navigation.PopModalAsync();
+                        var response = AppData.AppHttpClient.PostAsync(@"/api/register", content);
+                        if (response.Result.IsSuccessStatusCode)
+                        {
+                            AppData.Token = JsonSerializer.Deserialize<RegistrationAnswer>(response.Result.Content.ReadAsStringAsync().Result).Data["token"];
+                            errorController.DelError("Проблемы с соединением");
+                            Navigation.PopModalAsync();
+                        }
+                        else
+                            errorController.AddError("Проблемы с соединением");
                     }
-                    else
-                        AddError("Проблемы с соединением");
-
+                    if (Test.useLocal)
+                        Navigation.PopModalAsync();
                 }
-                if (Test.useLocal)                
-                    Navigation.PopModalAsync();                
-            }
+            }                      
         }
         private void toBack(object sender, EventArgs e)
         {
             Navigation.PopModalAsync();
-        }
-        
+        }   
         private static Regex numberCheck = new Regex(@"(8[0-9]{10})|(\+7[0-9]{10})");
         private static Regex passwordCheck = new Regex(@"[\w\d]{6,}");
-        private static SortedSet<string> errorSet;
-        private void AddError(string error)
-        {
-            if (error != "")
-            {
-                errorSet.Add(error);
-                ResultLabel.Text = errorSet.First();
-            }          
-        }
-        private void DelError(string error)
-        {
-            errorSet.Remove(error);
-            try
-            {
-                ResultLabel.Text = errorSet.First();
-            }
-            catch
-            {
-                ResultLabel.Text = "";
-            }
-        }
         private void NumberPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!numberCheck.IsMatch(e.NewTextValue))
-                AddError("Номер должен начинаться с +7 или 8");
+                errorController.AddError("Номер должен начинаться с +7 или 8");
             else
-                DelError("Номер должен начинаться с +7 или 8");
+                errorController.DelError("Номер должен начинаться с +7 или 8");
         }
         private void PasswordPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!passwordCheck.IsMatch(e.NewTextValue))
-                AddError("Пароль должен содержать 6 символов");
+                errorController.AddError("Пароль должен содержать 6 символов");
             else
-                DelError("Пароль должен содержать 6 символов");
+                errorController.DelError("Пароль должен содержать 6 символов");
         }
         private void PasswordCPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (PasswordCPlaceholder.Text != PasswordPlaceholder.Text)
-                AddError("Пароли должны совпадать");
+                errorController.AddError("Пароли должны совпадать");
             else
-                DelError("Пароли должны совпадать");
+                errorController.DelError("Пароли должны совпадать");
         }
         private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (e.NewTextValue == "")
-                AddError("Имя не может быть пустым");
+                errorController.AddError("Имя не может быть пустым");
             else
-                DelError("Имя не может быть пустым");
+                errorController.DelError("Имя не может быть пустым");
         }
         private string ClearPhone(string phone)
         {

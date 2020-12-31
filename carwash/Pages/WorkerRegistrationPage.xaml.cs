@@ -13,30 +13,35 @@ namespace carwash.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WorkerRegistrationPage : ContentPage
     {
+        private ErrorController errorController;
         public WorkerRegistrationPage()
         {
             InitializeComponent();
+            errorController = new ErrorController(ResultLabel);
         }
         private void Registration(object sender, EventArgs e)
         {
-            if (NamePlaceholder.Text != "")
+            if (NamePlaceholder.Text != null)
             {
-                var worker = Worker.NewWorker(AppData.Token, NamePlaceholder.Text);
-                if (worker != null)
+                if (NamePlaceholder.Text != "")
                 {
-                    ResultLabel.Text = "";
-                    Navigation.PopModalAsync();
+                    var worker = Worker.NewWorker(AppData.Token, NamePlaceholder.Text);
+                    if (worker != null)
+                    {
+                        errorController.DelError("Проблемы с соединением");
+                        Navigation.PopModalAsync();
+                    }
+                    else
+                        errorController.AddError("Проблемы с соединением");
                 }
-                else
-                    ResultLabel.Text = "Проблемы с соединением";                
-            }           
+            }         
         }
         private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (e.NewTextValue == "")
-                ResultLabel.Text = "Имя не может быть пустым";
+                errorController.AddError("Имя не может быть пустым");
             else
-                ResultLabel.Text = "";
+                errorController.DelError("Имя не может быть пустым");
         }
         private void toBack(object sender, EventArgs e)
         {

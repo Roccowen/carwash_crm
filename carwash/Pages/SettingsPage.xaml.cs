@@ -21,8 +21,6 @@ namespace carwash
             boxCount = BoxCountRead();
             BoxCountLabel.Text = boxCount.ToString();
             BoxStepper.Value = (int)boxCount;
-
-
         }     
         private int BoxCountRead()
         {

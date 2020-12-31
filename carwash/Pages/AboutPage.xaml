@@ -10,7 +10,8 @@
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout
+            Padding="10">
             <Label Text="О нас"
                 class="Title" 
                 HorizontalOptions="CenterAndExpand" />

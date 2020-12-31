@@ -1,4 +1,12 @@
-﻿label {
+﻿grid {
+    padding: 20;
+}
+
+stack{
+    padding: 20;
+}
+
+label {
     color: black;
 }
 
