@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using carwash.Models;
+using carwash.Services;
 
 namespace carwash.Pages
 {
@@ -17,9 +18,15 @@ namespace carwash.Pages
         public UsersWorkersPage()
         {
             InitializeComponent();
-            
-            Workers = Worker.GetWorkers(AppData.Token);
+            Workers = null;
             this.BindingContext = this;
+        }
+
+        private async void  StackLayout_Focused(object sender, FocusEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("@StackLayout_Focused");
+            var WorkersTask = WorkerService.GetWorkersAsync(AppData.Token);
+            Workers = await WorkersTask;
         }
     }
 }

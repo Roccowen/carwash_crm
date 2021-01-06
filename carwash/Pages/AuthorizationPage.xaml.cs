@@ -1,68 +1,78 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using carwash.Models;
+using carwash.Services;
+using carwash.Data;
+using System.Net;
 
 namespace carwash
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AuthorizationPage : ContentPage
     {
-        private ErrorController errorController;
+        private ErrorService errorService;
         public AuthorizationPage()
         {
             InitializeComponent();
-            errorController = new ErrorController(ResultLabel);
+            errorService = new ErrorService(ResultLabel);
         }
         public void AuthorizationClicked(object sender, EventArgs e)
         {
-            if (NumberPlaceholder.Text != null && PasswordPlaceholder.Text != null)
+            if (NumberPlaceholder.Text != null && PasswordPlaceholder.Text != null && numberCheck.IsMatch(NumberPlaceholder.Text) && PasswordPlaceholder.Text!="")
             {
-                if (PasswordPlaceholder.Text != "" && numberCheck.IsMatch(NumberPlaceholder.Text))
+                if (Test.useApi)
                 {
-                    if (Test.useApi)
+                    var answer = UserService.Authorization(ClearPhone(NumberPlaceholder.Text), PasswordPlaceholder.Text);
+                    switch (answer.Status)
                     {
-                        var content = new FormUrlEncodedContent(new[]
-                        {
-                            new KeyValuePair<string, string>("phone", ClearPhone(NumberPlaceholder.Text)),
-                            new KeyValuePair<string, string>("password", PasswordPlaceholder.Text),
-                        });
-                        var response = AppData.AppHttpClient.PostAsync(@"/api/login", content);
-                        if (response.Result.IsSuccessStatusCode)
-                        {
-                            AppData.Token = JsonSerializer.Deserialize<RegistrationAnswer>(response.Result.Content.ReadAsStringAsync().Result).Data["token"];
-                            App.Current.Properties.Add("phone", ClearPhone(NumberPlaceholder.Text));
-                            App.Current.Properties.Add("password", PasswordPlaceholder.Text);
-                            errorController.DelError("Неверный логин или пароль");
-                            Navigation.PopModalAsync();
-                        }
-                        else
-                            errorController.AddError("Неверный логин или пароль");
-                    }
-                    if (Test.useLocal)
-                    {
-                        if (numberCheck.IsMatch(NumberPlaceholder.Text) && PasswordPlaceholder.Text != null)
-                        {
-                            if (new Random().Next(0, 10) > 5)
+                        case System.Net.HttpStatusCode.OK:
+                            if (answer.Answer != null)
                             {
-                                App.Current.Properties.Add("phone", ClearPhone(NumberPlaceholder.Text));
-                                App.Current.Properties.Add("password", PasswordPlaceholder.Text);
-                                errorController.DelError("Неверный логин или пароль");
-                                Navigation.PopModalAsync();
+                                CurrentUserData.Token = answer.Answer.Data["token"];
+                                var currentUserAnswer = UserService.GetUser(CurrentUserData.Token);
+                                if (currentUserAnswer.Status == HttpStatusCode.OK)
+                                {
+                                    CurrentUserData.Id = currentUserAnswer.User.Id;
+                                    CurrentUserData.MainUserId = currentUserAnswer.User.MainUserId;
+                                    CurrentUserData.Name = currentUserAnswer.User.Name;
+                                    CurrentUserData.Phone = currentUserAnswer.User.Phone;
+                                    CurrentUserData.Settings = currentUserAnswer.User.Settings;
+                                    CurrentUserData.Email = currentUserAnswer.User.Email;
+                                    CurrentUserData.CreatedAt = currentUserAnswer.User.CreatedAt;
+                                    CurrentUserData.UpdatedAt = currentUserAnswer.User.UpdatedAt;
+                                    CurrentUserData.EmailVertifiedAt = currentUserAnswer.User.EmailVertifiedAt;
+                                    errorService.ClearErrors();
+                                    Navigation.PopModalAsync();
+                                }
+                                else
+                                    errorService.AddError(Errors.ConnectionProblem);
                             }
-                            else
-                                errorController.AddError("Неверный логин или пароль");
-                        }
+                            break;
+                        case System.Net.HttpStatusCode.NotFound:
+                            errorService.AddError(Errors.ConnectionProblem);
+                            break;
+                        case System.Net.HttpStatusCode.InternalServerError:
+                            errorService.AddError(Errors.WrongLoginOrPassword);
+                            break;
+                        default:
+                            break;
                     }
-                }                
+                }
+                if (Test.useLocal)
+                {
+                    if (new Random().Next(0, 10) > 5)
+                    {
+                        App.Current.Properties.Add("Phone", ClearPhone(NumberPlaceholder.Text));
+                        App.Current.Properties.Add("Password", PasswordPlaceholder.Text);
+                        errorService.ClearErrors();
+                        Navigation.PopModalAsync();
+                    }
+                    else
+                        errorService.AddError(Errors.WrongLoginOrPassword);
+                }
             }
         }
         private static Regex numberCheck = new Regex(@"(8[0-9]{10})|(\+7[0-9]{10})");
@@ -73,13 +83,13 @@ namespace carwash
         private void NumberPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (e.NewTextValue == "")
-                errorController.AddError("Номер не должен быть пустым");
+                errorService.AddError(Errors.PhoneMustNotBeEmpty);
             if (e.NewTextValue != "")
-                errorController.DelError("Номер не должен быть пустым");
+                errorService.DelError(Errors.PhoneMustNotBeEmpty);
             if (!numberCheck.IsMatch(e.NewTextValue))
-                errorController.AddError("Номер должен начинаться с +7 или 8");
+                errorService.AddError(Errors.UncorrectPhoneFormat);
             if (numberCheck.IsMatch(e.NewTextValue))
-                errorController.DelError("Номер должен начинаться с +7 или 8");
+                errorService.DelError(Errors.UncorrectPhoneFormat);
         }
         private string ClearPhone(string phone)
         {
@@ -92,9 +102,9 @@ namespace carwash
         private void PasswordPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (e.NewTextValue == "")
-                errorController.AddError("Пароль не должен быть пустым");
+                errorService.AddError(Errors.PasswordMustNotBeEmpty);
             if (e.NewTextValue != "")
-                errorController.DelError("Пароль не должен быть пустым");
+                errorService.DelError(Errors.PasswordMustNotBeEmpty);
         }
     }
 }

@@ -6,11 +6,11 @@ using System.Text;
 
 namespace carwash.Models
 {
-    public class ErrorController
+    public class ErrorService
     {
         private Xamarin.Forms.Label Result;
         private LinkedList<string> errorList;
-        public ErrorController(Xamarin.Forms.Label result)
+        public ErrorService(Xamarin.Forms.Label result)
         {
             Result = result;
             errorList = new LinkedList<string>();
@@ -35,5 +35,11 @@ namespace carwash.Models
                 Result.Text = "";
             }
         }
+        public void ClearErrors()
+        {
+            errorList.Clear();
+            Result.Text = "";
+        }
+        public bool HasError() => errorList.Count > 0;
     }
 }

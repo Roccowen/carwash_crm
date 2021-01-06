@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using carwash.Models;
+using carwash.Services;
 
 namespace carwash.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WorkerRegistrationPage : ContentPage
     {
-        private ErrorController errorController;
+        private ErrorService errorController;
         public WorkerRegistrationPage()
         {
             InitializeComponent();
-            errorController = new ErrorController(ResultLabel);
+            errorController = new ErrorService(ResultLabel);
         }
         private void Registration(object sender, EventArgs e)
         {
@@ -25,7 +26,7 @@ namespace carwash.Pages
             {
                 if (NamePlaceholder.Text != "")
                 {
-                    var worker = Worker.NewWorker(AppData.Token, NamePlaceholder.Text);
+                    var worker = WorkerService.NewWorker(AppData.Token, NamePlaceholder.Text);
                     if (worker != null)
                     {
                         errorController.DelError("Проблемы с соединением");

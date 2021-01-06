@@ -11,17 +11,18 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Threading;
 using carwash.Models;
+using carwash.Services;
 
 namespace carwash
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]   
     public partial class RegistrationPage : ContentPage
     {
-        private ErrorController errorController;
+        private ErrorService errorService;
         public RegistrationPage()
         {
             InitializeComponent();
-            errorController = new ErrorController(ResultLabel);
+            errorService = new ErrorService(ResultLabel);
         }
 
         private void Registration(object sender, EventArgs e)
@@ -29,35 +30,40 @@ namespace carwash
             if (NumberPlaceholder.Text != null &&
                 PasswordPlaceholder != null &&
                 PasswordCPlaceholder.Text != null &&
-                NamePlaceholder.Text != null)
+                NamePlaceholder.Text != null &&
+                numberCheck.IsMatch(NumberPlaceholder.Text) &&
+                passwordCheck.IsMatch(PasswordPlaceholder.Text) &&
+                PasswordCPlaceholder.Text == PasswordPlaceholder.Text &&
+                NamePlaceholder.Text != "")
             {
-                if (numberCheck.IsMatch(NumberPlaceholder.Text) &&
-               passwordCheck.IsMatch(PasswordPlaceholder.Text) &&
-               PasswordCPlaceholder.Text == PasswordPlaceholder.Text &&
-               NamePlaceholder.Text != "")
+                if (Test.useApi)
                 {
-                    if (Test.useApi)
+                    var answer = UserService.Registration(
+                        ClearPhone(NumberPlaceholder.Text),
+                        PasswordPlaceholder.Text,
+                        PasswordCPlaceholder.Text,
+                        NamePlaceholder.Text);
+                    switch (answer.Status)
                     {
-                        var content = new FormUrlEncodedContent(new[]
-                        {
-                        new KeyValuePair<string, string>("phone", ClearPhone(NumberPlaceholder.Text)),
-                        new KeyValuePair<string, string>("password", PasswordPlaceholder.Text),
-                        new KeyValuePair<string, string>("c_password", PasswordCPlaceholder.Text),
-                        new KeyValuePair<string, string>("name", NamePlaceholder.Text)
-                    });
-                        var response = AppData.AppHttpClient.PostAsync(@"/api/register", content);
-                        if (response.Result.IsSuccessStatusCode)
-                        {
-                            AppData.Token = JsonSerializer.Deserialize<RegistrationAnswer>(response.Result.Content.ReadAsStringAsync().Result).Data["token"];
-                            errorController.DelError("Проблемы с соединением");
-                            Navigation.PopModalAsync();
-                        }
-                        else
-                            errorController.AddError("Проблемы с соединением");
+                        case System.Net.HttpStatusCode.OK:
+                            if (answer.Answer != null)
+                            {
+                                errorService.ClearErrors();
+                                Navigation.PopModalAsync();
+                            }
+                            break;
+                        case System.Net.HttpStatusCode.NotFound:
+                            errorService.AddError(Errors.ConnectionProblem);
+                            break;
+                        case System.Net.HttpStatusCode.InternalServerError:
+                            errorService.AddError(Errors.ThisPhoneAlreadyTaken);
+                            break;
+                        default:
+                            break;
                     }
-                    if (Test.useLocal)
-                        Navigation.PopModalAsync();
                 }
+                if (Test.useLocal)
+                    Navigation.PopModalAsync();
             }                      
         }
         private void toBack(object sender, EventArgs e)
@@ -69,30 +75,30 @@ namespace carwash
         private void NumberPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!numberCheck.IsMatch(e.NewTextValue))
-                errorController.AddError("Номер должен начинаться с +7 или 8");
+                errorService.AddError("Номер должен начинаться с +7 или 8");
             else
-                errorController.DelError("Номер должен начинаться с +7 или 8");
+                errorService.DelError("Номер должен начинаться с +7 или 8");
         }
         private void PasswordPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!passwordCheck.IsMatch(e.NewTextValue))
-                errorController.AddError("Пароль должен содержать 6 символов");
+                errorService.AddError("Пароль должен содержать 6 символов");
             else
-                errorController.DelError("Пароль должен содержать 6 символов");
+                errorService.DelError("Пароль должен содержать 6 символов");
         }
         private void PasswordCPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (PasswordCPlaceholder.Text != PasswordPlaceholder.Text)
-                errorController.AddError("Пароли должны совпадать");
+                errorService.AddError("Пароли должны совпадать");
             else
-                errorController.DelError("Пароли должны совпадать");
+                errorService.DelError("Пароли должны совпадать");
         }
         private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (e.NewTextValue == "")
-                errorController.AddError("Имя не может быть пустым");
+                errorService.AddError("Имя не может быть пустым");
             else
-                errorController.DelError("Имя не может быть пустым");
+                errorService.DelError("Имя не может быть пустым");
         }
         private string ClearPhone(string phone)
         {
