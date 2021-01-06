@@ -46,7 +46,7 @@ namespace carwash
                     switch (answer.Status)
                     {
                         case System.Net.HttpStatusCode.OK:
-                            if (answer.Answer != null)
+                            if (answer.Token != "")
                             {
                                 errorService.ClearErrors();
                                 Navigation.PopModalAsync();

@@ -5,21 +5,19 @@ namespace carwash.Models
 {
     public class Client
     {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }
         [JsonPropertyName("phone")]
         public string Phone { get; set; }
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
-        [JsonPropertyName("email_vertified_at")]
-        public DateTime EmailVertifiedAt { get; set; }
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
+        [JsonPropertyName("car_information")]
+        public string CarInformation { get; set; }
+        [JsonPropertyName("user_id")]
+        public string UserId { get; set; }
         [JsonPropertyName("updated_at")]
         public DateTime UpdatedAt { get; set; }
-        [JsonPropertyName("main_user_id")]
-        public string MainUserId { get; set; }
-        [JsonPropertyName("settings")]
-        public string Settings { get; set; }
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; set; }
     }
 }

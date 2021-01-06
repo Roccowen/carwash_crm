@@ -25,7 +25,7 @@ namespace carwash.Pages
         private async void  StackLayout_Focused(object sender, FocusEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("@StackLayout_Focused");
-            var WorkersTask = WorkerService.GetWorkersAsync(AppData.Token);
+            var WorkersTask = WorkerService.GetAllWorkersAsync(AppData.Token);
             Workers = await WorkersTask;
         }
     }

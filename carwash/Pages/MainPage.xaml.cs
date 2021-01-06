@@ -22,7 +22,7 @@ namespace carwash
 
             if (CurrentUserData.Token != "")
             {
-                var currentUserAnswer = UserService.GetUser(CurrentUserData.Token);
+                var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
                 if (currentUserAnswer.Status == HttpStatusCode.OK)
                 {
                     CurrentUserData.Id = currentUserAnswer.User.Id;

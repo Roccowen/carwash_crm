@@ -29,10 +29,10 @@ namespace carwash
                     switch (answer.Status)
                     {
                         case System.Net.HttpStatusCode.OK:
-                            if (answer.Answer != null)
+                            if (answer.Token != "")
                             {
-                                CurrentUserData.Token = answer.Answer.Data["token"];
-                                var currentUserAnswer = UserService.GetUser(CurrentUserData.Token);
+                                CurrentUserData.Token = answer.Token;
+                                var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
                                 if (currentUserAnswer.Status == HttpStatusCode.OK)
                                 {
                                     CurrentUserData.Id = currentUserAnswer.User.Id;
@@ -52,12 +52,13 @@ namespace carwash
                             }
                             break;
                         case System.Net.HttpStatusCode.NotFound:
-                            errorService.AddError(Errors.ConnectionProblem);
+                            errorService.AddError(Errors.WrongLoginOrPassword);
                             break;
                         case System.Net.HttpStatusCode.InternalServerError:
                             errorService.AddError(Errors.WrongLoginOrPassword);
                             break;
                         default:
+                            errorService.AddError(Errors.ConnectionProblem);
                             break;
                     }
                 }

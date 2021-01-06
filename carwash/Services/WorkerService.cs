@@ -10,7 +10,7 @@ namespace carwash.Services
 {
     public static class WorkerService
     {
-        public static List<Worker> GetWorkers(string token)
+        public static List<Worker> GetAllWorkers(string token)
         {
             var request = new RestRequest(@"/api/workers", Method.GET)
             {
@@ -26,7 +26,7 @@ namespace carwash.Services
             else
                 return null;
         }
-        public static async Task<List<Worker>> GetWorkersAsync(string token)
+        public static async Task<List<Worker>> GetAllWorkersAsync(string token)
         {
             var request = new RestRequest(@"/api/workers", Method.GET)
             {
@@ -43,7 +43,7 @@ namespace carwash.Services
             else
                 return null;
         }
-        public static Worker GetWorker(string token, int id)
+        public static Worker GetWorker(string token, int id) //перейти на рест клиент, возвращать еще статус код, добавить асинхрон
         {
             AppData.AppHttpClient.DefaultRequestHeaders.Add("Authorization", $"{AppData.TokenType} {token}");
             var response = AppData.AppHttpClient.GetAsync($"/api/workers/{id}");
