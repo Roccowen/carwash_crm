@@ -94,60 +94,6 @@ namespace carwash.Data
                 App.Current.Properties["CurrentUserEmail"] = value;
             }
         }
-        public static DateTime EmailVertifiedAt
-        {
-            get
-            {
-                object emailVertifiedAt = DateTime.MinValue.ToString();
-                if (App.Current.Properties.TryGetValue("CurrentUserEmailVertifiedAt", out emailVertifiedAt))
-                    return (DateTime)emailVertifiedAt;
-                else
-                {
-                    App.Current.Properties.Add("CurrentUserEmailVertifiedAt", (string)emailVertifiedAt);
-                    return (DateTime)emailVertifiedAt;
-                }
-            }
-            set
-            {
-                App.Current.Properties["CurrentUserEmailVertifiedAt"] = value.ToString();
-            }
-        }
-        public static DateTime CreatedAt
-        {
-            get
-            {
-                object createdAt = DateTime.MinValue.ToString();
-                if (App.Current.Properties.TryGetValue("CurrentUserCreatedAt", out createdAt))
-                    return (DateTime)createdAt;
-                else
-                {
-                    App.Current.Properties.Add("CurrentUserCreatedAt", (string)createdAt);
-                    return (DateTime)createdAt;
-                }
-            }
-            set
-            {
-                App.Current.Properties["CurrentUserCreatedAt"] = value;
-            }
-        }
-        public static DateTime UpdatedAt
-        {
-            get
-            {
-                object updatedAt = DateTime.MinValue.ToString();
-                if (App.Current.Properties.TryGetValue("CurrentUserUpdatedAt", out updatedAt))
-                    return (DateTime)updatedAt;
-                else
-                {
-                    App.Current.Properties.Add("CurrentUserUpdatedAt", (string)updatedAt);
-                    return (DateTime)updatedAt;
-                }
-            }
-            set
-            {
-                App.Current.Properties["CurrentUserUpdatedAt"] = value;
-            }
-        }
         public static string MainUserId
         {
             get
@@ -184,5 +130,6 @@ namespace carwash.Data
                 App.Current.Properties["CurrentUserSettings"] = value;
             }
         }
+        public static void ClearData() => App.Current.Properties.Clear();
     }
 }

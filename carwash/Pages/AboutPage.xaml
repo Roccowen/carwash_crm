@@ -5,16 +5,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="carwash.AboutPage"
-             Title="О нас">
+             Title="Главная страница">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout
-            Padding="10">
-            <Label Text="О нас"
-                class="Title" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

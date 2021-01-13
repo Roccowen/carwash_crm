@@ -17,9 +17,5 @@ namespace carwash.Models
         public string Name { get; set; }
         [JsonPropertyName("user_id")]
         public string UserId { get; set; }
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt { get; set; }       
     }
 }

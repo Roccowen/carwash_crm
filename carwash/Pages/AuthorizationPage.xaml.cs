@@ -41,9 +41,6 @@ namespace carwash
                                     CurrentUserData.Phone = currentUserAnswer.User.Phone;
                                     CurrentUserData.Settings = currentUserAnswer.User.Settings;
                                     CurrentUserData.Email = currentUserAnswer.User.Email;
-                                    CurrentUserData.CreatedAt = currentUserAnswer.User.CreatedAt;
-                                    CurrentUserData.UpdatedAt = currentUserAnswer.User.UpdatedAt;
-                                    CurrentUserData.EmailVertifiedAt = currentUserAnswer.User.EmailVertifiedAt;
                                     errorService.ClearErrors();
                                     Navigation.PopModalAsync();
                                 }

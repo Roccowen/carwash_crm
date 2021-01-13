@@ -1,9 +1,9 @@
 ﻿grid {
-    padding: 20;
+    padding: 16;
 }
 
-stack{
-    padding: 20;
+StackLayout {
+    padding: 16;
 }
 
 label {

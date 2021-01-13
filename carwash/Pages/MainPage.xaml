@@ -8,22 +8,20 @@
              NavigationPage.HasNavigationBar="False"         
              MasterBehavior="Popover"
                   Title="MainPage">
-
     <MasterDetailPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </MasterDetailPage.Resources>
-
     <MasterDetailPage.Master>
         <ContentPage Title="Master">
             <ContentPage.Content>
                 <StackLayout>
-                    <Button Text="Настройки"
-                        Clicked="SettingsButtonClick"/>
-                    <Button Text="О нас"
-                        Clicked="AboutButtonClick"/>
                     <Button Text="Рабочие"
                             x:Name="WorkersButton"
                             Clicked="WorkersButton_Clicked"/>
+                    <Button Text="Заказы"
+                        Clicked="OrderButtonClick"/>
+                    <Button Text="Настройки"
+                        Clicked="SettingsButtonClick"/>
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>

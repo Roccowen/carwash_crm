@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:beh="clr-namespace:carwash.Behaviors"
+             mc:Ignorable="d"
+             x:Class="carwash.Pages.ClientRegistrationPage">
+    <ContentPage.Resources>
+        <StyleSheet Source = "/styles.css"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <Entry Placeholder="Введите имя"                  
+                   x:Name="NamePlaceholder"
+                   MaxLength="16"
+                   TextChanged="NamePlaceholder_TextChanged"
+                   Keyboard="Text"
+                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryTextValidator/>
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Введите телефон"                  
+                   x:Name="PhonePlaceholder"
+                   MaxLength="17"
+                   TextChanged="NamePlaceholder_TextChanged"
+                   Keyboard="Telephone"
+                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPhoneMask Mask="+7(XXX)XXX-XX-XX"/>
+                </Entry.Behaviors>
+            </Entry>
+            <Picker Title="Выберете автомобиль"
+                    x:Name="CarPicker"
+                    Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"/>
+            <Label Text=""
+                   x:Name ="ResultLabel"
+                   class="Information"
+                   Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="2"/>
+            <Button Text="Добавить"
+                    x:Name="AddNewClient"
+                    Clicked="AddNewClient_Clicked"
+                    Grid.Column="0" Grid.Row="4"/>
+            <Button Text="Назад" 
+                    x:Name="BackButton"
+                    Clicked="BackButton_Clicked"
+                    Grid.Column="1" Grid.Row="4"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

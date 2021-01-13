@@ -10,20 +10,16 @@ namespace carwash.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
         [JsonPropertyName("client_id")]
-        public string ClientId { get; set; }
+        public int ClientId { get; set; }
         [JsonPropertyName("worker_id")]
-        public string WorkerId { get; set; }
+        public int WorkerId { get; set; }
         [JsonPropertyName("user_id")]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         [JsonPropertyName("price")]
-        public string Price { get; set; }
+        public int Price { get; set; }
         [JsonPropertyName("type")]
         public string Type { get; set; }
         [JsonPropertyName("status")]
         public string Status { get; set; }
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace carwash
 
             if (CurrentUserData.Token != "")
             {
+                System.Diagnostics.Debug.WriteLine("@Token is not empty");
                 var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
                 if (currentUserAnswer.Status == HttpStatusCode.OK)
                 {
@@ -31,15 +32,16 @@ namespace carwash
                     CurrentUserData.Phone = currentUserAnswer.User.Phone;
                     CurrentUserData.Settings = currentUserAnswer.User.Settings;
                     CurrentUserData.Email = currentUserAnswer.User.Email;
-                    CurrentUserData.CreatedAt = currentUserAnswer.User.CreatedAt;
-                    CurrentUserData.UpdatedAt = currentUserAnswer.User.UpdatedAt;
-                    CurrentUserData.EmailVertifiedAt = currentUserAnswer.User.EmailVertifiedAt;
                 }
+                else
+                    CurrentUserData.Id = -1;
             }
-            else
+            if (CurrentUserData.Id == -1 || CurrentUserData.Token == "")
+            {
+                System.Diagnostics.Debug.WriteLine("@Token is not empty or Id is -1");
                 Navigation.PushModalAsync(new AuthorizationPage());
-            if (Test.withRegistration)
-                Navigation.PushModalAsync(new AuthorizationPage());            
+            }
+                
             Detail = new NavigationPage(new AboutPage());
             IsPresented = false;            
         }
@@ -51,6 +53,12 @@ namespace carwash
         public void AboutButtonClick(object sender, EventArgs e)
         {
             Detail = new NavigationPage(new AboutPage());
+            IsPresented = false;
+
+        }
+        public void OrderButtonClick(object sender, EventArgs e)
+        {
+            Detail = new NavigationPage(new OrdersPage());
             IsPresented = false;
         }
         private void WorkersButton_Clicked(object sender, EventArgs e)

@@ -10,14 +10,16 @@ namespace carwash.Services
 {
     public static class UserService
     {
-        public static async Task<(HttpStatusCode Status, string Token)> RegistrationAsync(string Phone, string Password, string CPassword, string Name = null, string Email = null)
+        public static async Task<(HttpStatusCode Status, string Token)> RegistrationAsync(string Phone, string Password, string CPassword, string Name = "", string Email = "")
         {
             var request = new RestRequest(@"/api/register", Method.POST)
                 .AddParameter("phone", Phone)
                 .AddParameter("password", Password)
-                .AddParameter("c_password", CPassword)
-                .AddParameter("name", Name)
-                .AddParameter("email", Email);
+                .AddParameter("c_password", CPassword);
+            if (Name != "")
+                request.AddParameter("name", Name);
+            if (Email != "")
+                request.AddParameter("email", Email);
             var responseTask = AppData.AppRestClient.ExecuteAsync(request);
             var response = await responseTask;
             if (response.IsSuccessful)
@@ -28,14 +30,16 @@ namespace carwash.Services
             else
                 return (response.StatusCode, "");
         }
-        public static (HttpStatusCode Status, string Token) Registration(string Phone, string Password, string CPassword, string Name = null, string Email = null)
+        public static (HttpStatusCode Status, string Token) Registration(string Phone, string Password, string CPassword, string Name = "", string Email = "")
         {
             var request = new RestRequest(@"/api/register", Method.POST)
                 .AddParameter("phone", Phone)
                 .AddParameter("password", Password)
-                .AddParameter("c_password", CPassword)
-                .AddParameter("name", Name)
-                .AddParameter("email", Email);
+                .AddParameter("c_password", CPassword);
+            if (Name != "")
+                request.AddParameter("name", Name);
+            if (Email != "")
+                request.AddParameter("email", Email);
             var response = AppData.AppRestClient.Execute(request);
             if (response.IsSuccessful)
             {
@@ -80,10 +84,7 @@ namespace carwash.Services
                 .AddHeader("Authorization", $"{AppData.TokenType} {token}");
             var response = AppData.AppRestClient.Execute(request);
             if (response.IsSuccessful)
-            {
-                var user = JsonSerializer.Deserialize<User>(response.Content);
-                return (response.StatusCode, user);
-            }
+                return (response.StatusCode, JsonSerializer.Deserialize<User>(response.Content));
             else
                 return (response.StatusCode, null);
         }

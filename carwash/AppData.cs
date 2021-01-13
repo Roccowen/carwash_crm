@@ -9,17 +9,12 @@ namespace carwash
     public partial class AppData
     {
         public static Uri ApiRoute = new Uri(@"http://194.67.93.122");
-        public static string CSSPath = "/Styles/Styles.css";
-        public static HttpClient AppHttpClient = new HttpClient() 
-        { 
-            BaseAddress = ApiRoute 
-        };
-        public static RestClient AppRestClient = new RestClient() 
-        { 
+        public static RestClient AppRestClient = new RestClient()
+        {
             BaseUrl = ApiRoute,
             Timeout = -1
         };
-        public static string Token = "";
         public static string TokenType = "Bearer";
+        public static string CSSPath = "/Styles/Styles.css";
     }
 }

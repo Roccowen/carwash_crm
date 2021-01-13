@@ -4,11 +4,11 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="carwash.AuthorizationPage">
+             x:Class="carwash.AuthorizationPage"
+             Title="Авторизация">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>
-    
     <ContentPage.Content>
         <Grid>
             <Grid.ColumnDefinitions>

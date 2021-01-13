@@ -11,6 +11,7 @@ namespace carwash.Models
         public const string WrongLoginOrPassword = "Неверный логин или пароль";
         public const string PhoneMustNotBeEmpty = "Номер не должен быть пустым";
         public const string PasswordMustNotBeEmpty = "Пароль не должен быть пустым";
+        public const string NameMustNotBeEmpty = "Имя не должно быть пустым";
         public const string ThisPhoneAlreadyTaken = "Номер уже занят";
     }
 }

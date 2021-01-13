@@ -1,34 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using carwash.Models;
-using RestSharp;
+﻿using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Net;
+using RestSharp;
+using carwash.Models;
 
 namespace carwash.Services
 {
     public static class WorkerService
     {
-        public static List<Worker> GetAllWorkers(string token)
+        public static (HttpStatusCode Status, List<Worker> Workers) GetWorkers(string token)
         {
-            var request = new RestRequest(@"/api/workers", Method.GET)
+            var request = new RestRequest(@"/api/user/workers", Method.GET)
             {
                 AlwaysMultipartFormData = true
-            };
-            request.AddHeader("Authorization", $"{AppData.TokenType} {token}");
+            }
+            .AddHeader("Authorization", $"{AppData.TokenType} {token}");
             var response = AppData.AppRestClient.Execute(request);
             if (response.IsSuccessful)
-            {
-                var worker = JsonSerializer.Deserialize<List<Worker>>(response.Content);
-                return worker;
-            }
+                return (response.StatusCode, JsonSerializer.Deserialize<List<Worker>>(response.Content));
             else
-                return null;
+                return (response.StatusCode, null);
         }
-        public static async Task<List<Worker>> GetAllWorkersAsync(string token)
+        public static async Task<(HttpStatusCode Status, List<Worker> Workers)> GetWorkersAsync(string token)
         {
-            var request = new RestRequest(@"/api/workers", Method.GET)
+            var request = new RestRequest(@"/api/user/workers", Method.GET)
             {
                 AlwaysMultipartFormData = true
             }
@@ -36,42 +32,44 @@ namespace carwash.Services
             var responseTask = AppData.AppRestClient.ExecuteAsync(request);
             var response = await responseTask;
             if (response.IsSuccessful)
-            {
-                var worker = JsonSerializer.Deserialize<List<Worker>>(response.Content);
-                return worker;
-            }
+                return (response.StatusCode, JsonSerializer.Deserialize<List<Worker>>(response.Content));
             else
-                return null;
+                return (response.StatusCode, null);
         }
-        public static Worker GetWorker(string token, int id) //перейти на рест клиент, возвращать еще статус код, добавить асинхрон
+        public static (HttpStatusCode Status, Worker Worker) GetWorkerById(int workerId, string token)
         {
-            AppData.AppHttpClient.DefaultRequestHeaders.Add("Authorization", $"{AppData.TokenType} {token}");
-            var response = AppData.AppHttpClient.GetAsync($"/api/workers/{id}");
-            if (response.Result.IsSuccessStatusCode)
-            {
-                var worker = JsonSerializer.Deserialize<Worker>(response.Result.Content.ReadAsStringAsync().Result);
-                AppData.AppHttpClient.DefaultRequestHeaders.Remove("Authorization");
-                return worker;
-            }
+            var request = new RestRequest($@"/api/workers/{workerId}", Method.GET)
+                .AddHeader("Authorization", $"{AppData.TokenType} {token}");
+            var response = AppData.AppRestClient.Execute(request);
+            if (response.IsSuccessful)
+                return (response.StatusCode, JsonSerializer.Deserialize<Worker>(response.Content));
             else
-                return null;
+                return (response.StatusCode, null);
         }
-        public static Worker NewWorker(string token, string name)
+        public static async Task<(HttpStatusCode Status, Worker Worker)> GetWorkerByIdAsync(int workerId, string token)
+        {
+            var request = new RestRequest($@"/api/workers/{workerId}", Method.GET)
+                .AddHeader("Authorization", $"{AppData.TokenType} {token}");
+            var responseTask = AppData.AppRestClient.ExecuteAsync(request);
+            var response = await responseTask;
+            if (response.IsSuccessful)
+                return (response.StatusCode, JsonSerializer.Deserialize<Worker>(response.Content));
+            else
+                return (response.StatusCode, null);
+        }
+        public static (HttpStatusCode Status, Worker Worker) NewWorker(string token, string name)
         {
             var request = new RestRequest(@"/api/workers", Method.POST)
             {
                 AlwaysMultipartFormData = true
-            };
-            request.AddHeader("Authorization", $"{AppData.TokenType} {token}");
-            request.AddParameter("name", $"{name}");
-            var response = AppData.AppRestClient.ExecuteAsync(request);
-            if (response.Result.IsSuccessful)
-            {
-                var worker = JsonSerializer.Deserialize<Worker>(response.Result.Content);
-                return worker;
             }
+            .AddHeader("Authorization", $"{AppData.TokenType} {token}")
+            .AddParameter("name", $"{name}");
+            var response = AppData.AppRestClient.Execute(request);
+            if (response.IsSuccessful)
+                return (response.StatusCode, JsonSerializer.Deserialize<Worker>(response.Content));
             else
-                return null;
+                return (response.StatusCode, null);
         }
     }
 }

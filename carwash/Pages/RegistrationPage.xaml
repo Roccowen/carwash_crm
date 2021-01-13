@@ -4,7 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="carwash.RegistrationPage">
+             x:Class="carwash.RegistrationPage"
+             Title="Регистрация">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>
@@ -49,7 +50,7 @@
                    x:Name="PasswordCPlaceholder"
                    TextChanged="PasswordCPlaceholder_TextChanged"
                    Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"/>
-            <Label Text=" "
+            <Label Text=""
                    x:Name ="ResultLabel"
                    class="Information"
                    Grid.Column="0" Grid.Row="5"  Grid.ColumnSpan="2"/>

@@ -1,4 +1,5 @@
-﻿using carwash.Pages;
+﻿using carwash.Data;
+using carwash.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,20 @@ namespace carwash
         private void AddNewEmploeeButton_Clicked(object sender, EventArgs e)
         {
             Navigation.PushModalAsync(new WorkerRegistrationPage());
+        }
+        private async void LeaveButton_Clicked(object sender, EventArgs e)
+        {
+            bool result = await DisplayAlert("Подтвердить действие", "Вы действительно хотите выйти из аккаунта?", "Да", "Нет");
+            if (result)
+            {
+                CurrentUserData.ClearData();
+                await Navigation.PushModalAsync(new AuthorizationPage());
+            }
+        }
+
+        private void AddNewClietnButton_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new ClientRegistrationPage());
         }
     }
 }

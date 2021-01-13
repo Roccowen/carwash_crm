@@ -5,13 +5,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:carwash"
              mc:Ignorable="d"
+             Title="Работники"
              x:Class="carwash.Pages.UsersWorkersPage">
+    <ContentPage.Resources>
+        <StyleSheet Source = "/styles.css"/>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Твои работники"
-                    class="Title"/>
             <ListView x:Name="workerList" 
-                      ItemsSource="{Binding Workers}">
+                      ItemsSource="{Binding Workers}"
+                      SeparatorVisibility="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell
