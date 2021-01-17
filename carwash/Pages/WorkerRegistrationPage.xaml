@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:beh="clr-namespace:carwash.Behaviors"
              mc:Ignorable="d"
              x:Class="carwash.Pages.WorkerRegistrationPage"
              Title="Новый работник">
@@ -22,26 +23,23 @@
                 <RowDefinition Height="40" />
                 <RowDefinition Height="60" />
             </Grid.RowDefinitions>
-            <Label Text="Регистрация нового рабочего"
-                   class="Title"
-                   Grid.Column="0" Grid.Row="0"  Grid.ColumnSpan="2"/>
             <Entry Placeholder="Введите имя"
                    x:Name="NamePlaceholder" 
-                   MaxLength="16"
+                   MaxLength="22"
                    TextChanged="NamePlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
-            <Label Text=""
-                   x:Name ="ResultLabel"
-                   class="Information"
-                   Grid.Column="0" Grid.Row="2"  Grid.ColumnSpan="2"/>
+                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryTextValidator/>
+                </Entry.Behaviors>
+            </Entry>
             <Button Text="Зарегестрировать"
                     x:Name="RegistrationButton"
                     Clicked="Registration"
-                    Grid.Column="0" Grid.Row="4"/>
+                    Grid.Column="0" Grid.Row="3"/>
             <Button Text="Назад" 
                     x:Name="BackButton"
                     Clicked="toBack"
-                    Grid.Column="1" Grid.Row="4"/>
+                    Grid.Column="1" Grid.Row="3"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 
 using carwash.Data;
+using carwash.Models;
 
 namespace carwash
 {
@@ -22,16 +23,25 @@ namespace carwash
 
             if (CurrentUserData.Token != "")
             {
-                System.Diagnostics.Debug.WriteLine("@Token is not empty");
+                System.Diagnostics.Debug.WriteLine("@MP Token is not empty");
                 var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
                 if (currentUserAnswer.Status == HttpStatusCode.OK)
                 {
-                    CurrentUserData.Id = currentUserAnswer.User.Id;
-                    CurrentUserData.MainUserId = currentUserAnswer.User.MainUserId;
-                    CurrentUserData.Name = currentUserAnswer.User.Name;
-                    CurrentUserData.Phone = currentUserAnswer.User.Phone;
-                    CurrentUserData.Settings = currentUserAnswer.User.Settings;
-                    CurrentUserData.Email = currentUserAnswer.User.Email;
+                    CurrentUserData.NewUserData(currentUserAnswer.User);
+                    System.Diagnostics.Debug.WriteLine("@MP threading start");
+                    var orders = new List<Order>();
+                    var clients = new List<Client>();
+                    var workers = new List<Worker>();
+                    System.Diagnostics.Debug.WriteLine("@MP ordersTask is start");
+                    Task.Factory.StartNew(() =>
+                    {
+                        orders = OrderService.GetOrdersDebug(CurrentUserData.Token).Orders;
+                        workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+                        clients = ClientService.GetClients(CurrentUserData.Token).Clients;
+                    }).ContinueWith(task =>
+                    {
+                        DBService.DBFilling(orders, workers, clients);
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
                 }
                 else
                     CurrentUserData.Id = -1;
@@ -54,7 +64,6 @@ namespace carwash
         {
             Detail = new NavigationPage(new AboutPage());
             IsPresented = false;
-
         }
         public void OrderButtonClick(object sender, EventArgs e)
         {
@@ -63,7 +72,7 @@ namespace carwash
         }
         private void WorkersButton_Clicked(object sender, EventArgs e)
         {
-            Detail = new NavigationPage(new UsersWorkersPage());
+            Detail = new NavigationPage(new WorkersPage());
             IsPresented = false;
         }
     }

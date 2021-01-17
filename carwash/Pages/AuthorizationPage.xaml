@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:beh="clr-namespace:carwash.Behaviors"
              mc:Ignorable="d"
              x:Class="carwash.AuthorizationPage"
              Title="Авторизация">
@@ -19,7 +20,6 @@
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
-                <RowDefinition Height="*" />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Label Text="Добро пожаловать!"
@@ -28,28 +28,32 @@
             <Entry Placeholder="Введите номер телефона"
                    Keyboard="Telephone"
                    x:Name="NumberPlaceholder" 
-                   MaxLength="12"
+                   MaxLength="17"
                    TextChanged="NumberPlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
+                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPhoneMask Mask="+7(XXX)XXX-XX-XX"/>
+                </Entry.Behaviors>
+            </Entry>
             <Entry Placeholder="Введите пароль" 
                    IsPassword="True"
                    MaxLength="32"
                    x:Name="PasswordPlaceholder"
                    TextChanged="PasswordPlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"/>
-            <Label Text=""
-                   x:Name ="ResultLabel"
-                   class="Information"
-                   Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="2"/>
+                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPasswordValidator/>
+                </Entry.Behaviors>
+            </Entry>
             <Button Text="Регистрация" 
                     StyleClass="reg"
                     x:Name="ToRegistrationButton"
                     Clicked="ToRegistration"
-                    Grid.Column="0" Grid.Row="4"/>
+                    Grid.Column="0" Grid.Row="3"/>
             <Button Text="Войти"
                     x:Name="AuthorizationButton"
                     Clicked="AuthorizationClicked"
-                    Grid.Column="1" Grid.Row="4"/>
+                    Grid.Column="1" Grid.Row="3"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

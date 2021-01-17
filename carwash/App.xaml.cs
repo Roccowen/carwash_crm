@@ -1,6 +1,8 @@
-﻿using System;
+﻿using carwash.Services;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using carwash.Models;
 
 namespace carwash
 {
@@ -16,6 +18,7 @@ namespace carwash
 
         protected override void OnStart()
         {
+
         }
 
         protected override void OnSleep()

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Net;
-using System.Diagnostics;
 using RestSharp;
 using carwash.Models;
 using System;
@@ -35,50 +34,7 @@ namespace carwash.Services
                 .AddParameter("status", status);
             var response = AppData.AppRestClient.Execute(request);
             if (response.IsSuccessful)
-            {
-                var orderRaw = System.Text.Json.JsonSerializer.Deserialize<NewOrderRaw>(response.Content);
-                Debug.WriteLine($"OrderRaw{orderRaw.Id} - {orderRaw.DateOfReservation}");
-                Debug.WriteLine($"{DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null)}");
-                var order = new Order
-                {
-                    ClientId = Convert.ToInt32(orderRaw.ClientId),
-                    DateOfReservation = DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null),
-                    Id = orderRaw.Id,
-                    Price = Convert.ToInt32(orderRaw.Price),
-                    Status = orderRaw.Status,
-                    Type = orderRaw.Type,
-                    UserId = orderRaw.UserId,
-                    WorkerId = Convert.ToInt32(orderRaw.WorkerId)
-                };
-                return (response.StatusCode, order);
-            }                
-            else
-                return (response.StatusCode, null);
-        }
-        public static (HttpStatusCode Status, Order Order) NewOrderNotWorking(DateTime reserveDate,
-                                                            int clientId,
-                                                            int workerId,
-                                                            int price,
-                                                            string token,
-                                                            string type = "full",
-                                                            int status = 0)
-        {
-            var request = new RestRequest(@"/api/order", Method.POST)
-                .AddHeader("Authorization", $"{AppData.TokenType} {token}")
-                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
-                .AddParameter("reserve_date", reserveDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                .AddParameter("client_id", clientId)
-                .AddParameter("worker_id", workerId)
-                .AddParameter("price", price)
-                .AddParameter("type", type)
-                .AddParameter("status", status);
-            var response = AppData.AppRestClient.Execute(request);
-            if (response.IsSuccessful)
-            {
-                var createdOrder = JsonConvert.DeserializeObject<Order>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
-                Debug.WriteLine($"@NewOrder {createdOrder.Id}-{createdOrder.Client}-{createdOrder.Price}");
-                return (response.StatusCode, createdOrder);
-            }
+                return (response.StatusCode, JsonConvert.DeserializeObject<Order>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" }));
             else
                 return (response.StatusCode, null);
         }
@@ -106,18 +62,18 @@ namespace carwash.Services
                 List<Order> orders = new List<Order>();
                 foreach (var orderRaw in ordersRaw)
                 {
-                    Debug.WriteLine($"OrderRaw{orderRaw.Id} - {orderRaw.DateOfReservation}");
-                    Debug.WriteLine($"{DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null)}");
+                    System.Diagnostics.Debug.WriteLine($"OrderRaw{orderRaw.Id} - {orderRaw.DateOfReservation}");
+                    System.Diagnostics.Debug.WriteLine($"{DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null)}");
                     orders.Add(new Order
                     {
-                        ClientId = orderRaw.ClientId,
+                        ClientId = Convert.ToInt32(orderRaw.ClientId),
                         DateOfReservation = DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null),
-                        Id = orderRaw.Id,
-                        Price = orderRaw.Price,
+                        Id = Convert.ToInt32(orderRaw.Id),
+                        Price = Convert.ToInt32(orderRaw.Price),
                         Status = orderRaw.Status,
                         Type = orderRaw.Type,
-                        UserId = orderRaw.UserId,
-                        WorkerId = orderRaw.WorkerId
+                        UserId = Convert.ToInt32(orderRaw.UserId),
+                        WorkerId = Convert.ToInt32(orderRaw.WorkerId)
                     });
                 } 
                 return (response.StatusCode, orders);
@@ -186,41 +142,23 @@ namespace carwash.Services
         }
         private class OrderRaw
         {
-            [JsonPropertyName("date_of_reservation")]
-            public string DateOfReservation { get; set; }
             [JsonPropertyName("id")]
             public int Id { get; set; }
+            [JsonPropertyName("date_of_reservation")]
+            public string DateOfReservation { get; set; }
             [JsonPropertyName("client_id")]
             public int ClientId { get; set; }
-            [JsonPropertyName("worker_id")]
-            public int WorkerId { get; set; }
             [JsonPropertyName("user_id")]
             public int UserId { get; set; }
+            [JsonPropertyName("worker_id")]
+            public int WorkerId { get; set; }
+            [JsonPropertyName("status")]
+            public string Status { get; set; }
             [JsonPropertyName("price")]
             public int Price { get; set; }
             [JsonPropertyName("type")]
             public string Type { get; set; }
-            [JsonPropertyName("status")]
-            public string Status { get; set; }
-        }
-        private class NewOrderRaw
-        {
-            [JsonPropertyName("date_of_reservation")]
-            public string DateOfReservation { get; set; }
-            [JsonPropertyName("id")]
-            public int Id { get; set; }
-            [JsonPropertyName("client_id")]
-            public string ClientId { get; set; }
-            [JsonPropertyName("worker_id")]
-            public string WorkerId { get; set; }
-            [JsonPropertyName("user_id")]
-            public int UserId { get; set; }
-            [JsonPropertyName("price")]
-            public string Price { get; set; }
-            [JsonPropertyName("type")]
-            public string Type { get; set; }
-            [JsonPropertyName("status")]
-            public string Status { get; set; }
+
         }
     }
 }

@@ -7,102 +7,77 @@ using carwash.Models;
 using carwash.Services;
 using carwash.Data;
 using System.Net;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace carwash
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AuthorizationPage : ContentPage
     {
-        private ErrorService errorService;
         public AuthorizationPage()
         {
             InitializeComponent();
-            errorService = new ErrorService(ResultLabel);
         }
         public void AuthorizationClicked(object sender, EventArgs e)
         {
-            if (NumberPlaceholder.Text != null && PasswordPlaceholder.Text != null && numberCheck.IsMatch(NumberPlaceholder.Text) && PasswordPlaceholder.Text!="")
+            if (NumberPlaceholder.Text != null && ValidService.numberCheck.IsMatch(NumberPlaceholder.Text))
             {
-                if (Test.useApi)
+                if (PasswordPlaceholder.Text != null && ValidService.passwordCheck.IsMatch(PasswordPlaceholder.Text))
                 {
-                    var answer = UserService.Authorization(ClearPhone(NumberPlaceholder.Text), PasswordPlaceholder.Text);
+                    var answer = UserService.Authorization(ValidService.ClearPhone(NumberPlaceholder.Text), PasswordPlaceholder.Text);
                     switch (answer.Status)
                     {
                         case System.Net.HttpStatusCode.OK:
-                            if (answer.Token != "")
+                            CurrentUserData.Token = answer.Token;
+                            var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
+                            if (currentUserAnswer.Status == HttpStatusCode.OK)
                             {
-                                CurrentUserData.Token = answer.Token;
-                                var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
-                                if (currentUserAnswer.Status == HttpStatusCode.OK)
+                                System.Diagnostics.Debug.WriteLine("@AUTH auth is suc");
+                                CurrentUserData.NewUserData(currentUserAnswer.User);
+
+                                System.Diagnostics.Debug.WriteLine("@AUTH threading start");
+                                var orders = new List<Order>();
+                                var clients = new List<Client>();
+                                var workers = new List<Worker>();
+                                Task.Factory.StartNew(() =>
                                 {
-                                    CurrentUserData.Id = currentUserAnswer.User.Id;
-                                    CurrentUserData.MainUserId = currentUserAnswer.User.MainUserId;
-                                    CurrentUserData.Name = currentUserAnswer.User.Name;
-                                    CurrentUserData.Phone = currentUserAnswer.User.Phone;
-                                    CurrentUserData.Settings = currentUserAnswer.User.Settings;
-                                    CurrentUserData.Email = currentUserAnswer.User.Email;
-                                    errorService.ClearErrors();
-                                    Navigation.PopModalAsync();
-                                }
-                                else
-                                    errorService.AddError(Errors.ConnectionProblem);
+                                    System.Diagnostics.Debug.WriteLine("@AUTH ordersTask is start");
+                                    orders = OrderService.GetOrdersDebug(CurrentUserData.Token).Orders;
+                                    workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+                                    clients = ClientService.GetClients(CurrentUserData.Token).Clients;
+                                }).ContinueWith(task =>
+                                {
+                                    DBService.DBFilling(orders, workers, clients);
+                                }, TaskScheduler.FromCurrentSynchronizationContext());
+                                Navigation.PopModalAsync();
                             }
+                            else
+                                DisplayAlert("Ошибка получения данных", $"{currentUserAnswer.Status}", "ОK");
                             break;
                         case System.Net.HttpStatusCode.NotFound:
-                            errorService.AddError(Errors.WrongLoginOrPassword);
-                            break;
-                        case System.Net.HttpStatusCode.InternalServerError:
-                            errorService.AddError(Errors.WrongLoginOrPassword);
+                            DisplayAlert("Ошибка авторизации", $"Неверный номер или пароль", "ОK");
                             break;
                         default:
-                            errorService.AddError(Errors.ConnectionProblem);
+                            DisplayAlert("Ошибка авторизации", $"{answer.Status}", "ОK");
                             break;
                     }
                 }
-                if (Test.useLocal)
-                {
-                    if (new Random().Next(0, 10) > 5)
-                    {
-                        App.Current.Properties.Add("Phone", ClearPhone(NumberPlaceholder.Text));
-                        App.Current.Properties.Add("Password", PasswordPlaceholder.Text);
-                        errorService.ClearErrors();
-                        Navigation.PopModalAsync();
-                    }
-                    else
-                        errorService.AddError(Errors.WrongLoginOrPassword);
-                }
+                else DisplayAlert("Ошибка", $"Пароль должен содержать шесть символов", "ОK");
             }
+            else DisplayAlert("Ошибка", $"Некорректный ввод номера", "ОK");
         }
-        private static Regex numberCheck = new Regex(@"(8[0-9]{10})|(\+7[0-9]{10})");
-        public void ToRegistration(object sender, EventArgs e)
+        public async void ToRegistration(object sender, EventArgs e)
         {
-            Navigation.PushModalAsync(new RegistrationPage());
+            await Navigation.PushModalAsync(new RegistrationPage());
         }
         private void NumberPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue == "")
-                errorService.AddError(Errors.PhoneMustNotBeEmpty);
-            if (e.NewTextValue != "")
-                errorService.DelError(Errors.PhoneMustNotBeEmpty);
-            if (!numberCheck.IsMatch(e.NewTextValue))
-                errorService.AddError(Errors.UncorrectPhoneFormat);
-            if (numberCheck.IsMatch(e.NewTextValue))
-                errorService.DelError(Errors.UncorrectPhoneFormat);
-        }
-        private string ClearPhone(string phone)
-        {
-            if (phone.ToCharArray()[0] == '+')
-                return phone.Replace("+7", "");
-            if (phone.ToCharArray()[0] == '8')
-                return phone.Replace("8", "");
-            return "";
+
         }
         private void PasswordPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue == "")
-                errorService.AddError(Errors.PasswordMustNotBeEmpty);
-            if (e.NewTextValue != "")
-                errorService.DelError(Errors.PasswordMustNotBeEmpty);
+
         }
     }
 }

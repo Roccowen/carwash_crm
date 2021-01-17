@@ -20,46 +20,54 @@ namespace carwash.Pages
         public OrderRegistrationPage()
         {
             InitializeComponent();
-            Clients = ClientService.GetClients(CurrentUserData.Token).Clients.Where(c => Convert.ToInt32(c.UserId) == CurrentUserData.Id).ToList();
-            Workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+            Clients = DBService.GetClients().Where(c => Convert.ToInt32(c.UserId) == CurrentUserData.Id).ToList();
+            Workers = DBService.GetWorkers();
             this.BindingContext = this;
         }
-
-        private void PricePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
+        private async void AddNewOrder_Clicked(object sender, EventArgs e)
         {
-            
-        }
-
-        private async void  AddNewOrder_Clicked(object sender, EventArgs e)
-        {
-            int price = 0;
-            if (int.TryParse(PricePlaceholder.Text, out price) &&
-                ClientPicker.SelectedItem != null &&
-                WorkerPicker.SelectedItem != null &&
-                CurrentUserData.Token != "")
+            int price = -1;
+            if (WorkerPicker.SelectedItem != null)
             {
-                var reservationDateTime = ReservationDataPicker.Date.Add(ReservationTimePicker.Time);
-                var client = (Client)ClientPicker.SelectedItem;
-                var worker = (Worker)WorkerPicker.SelectedItem;
-                var order = OrderService.NewOrder(reservationDateTime, client.Id, worker.Id, price, CurrentUserData.Token);
-                System.Diagnostics.Debug.WriteLine($"@{order.Status.ToString()}");
-                switch (order.Status)
+                if (ClientPicker.SelectedItem != null)
                 {
-                    case System.Net.HttpStatusCode.Created:
-                        await Navigation.PopModalAsync();
-                        break;
-                    case System.Net.HttpStatusCode.OK:
-                        await Navigation.PopModalAsync();
-                        break;
-                    default:
-                        break;
+                    if (int.TryParse(PricePlaceholder.Text, out price) && price > 0)
+                    {
+                        if (CurrentUserData.Token != "")
+                        {
+                            var reservationDateTime = ReservationDataPicker.Date.Add(ReservationTimePicker.Time);
+                            var client = (Client)ClientPicker.SelectedItem;
+                            var worker = (Worker)WorkerPicker.SelectedItem;
+                            var order = OrderService.NewOrder(reservationDateTime, client.Id, worker.Id, price, CurrentUserData.Token);
+                            switch (order.Status)
+                            {
+                                case System.Net.HttpStatusCode.Created:
+                                    DBService.FindOrAddOrder(order.Order);
+                                    await Navigation.PopModalAsync();
+                                    break;
+                                case System.Net.HttpStatusCode.OK:
+                                    DBService.FindOrAddOrder(order.Order);
+                                    await Navigation.PopModalAsync();
+                                    break;
+                                default:
+                                    await DisplayAlert("Ошибка добавления заказа", $"{order.Status}", "ОК");
+                                    break;
+                            }
+                        }
+                    }
+                    else await DisplayAlert("Ошибка", "Цена введена некорректно", "ОК");
                 }
+                else await DisplayAlert("Ошибка", "Необходимо выбрать клиента", "ОК");
             }
+            else await DisplayAlert("Ошибка", "Необходимо выбрать рабочего", "ОК");
         }
-
         private async void BackButton_Clicked(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
+        }
+        private void PricePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

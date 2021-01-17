@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using carwash.Services;
 namespace carwash
 {
     public static class Test
@@ -11,7 +11,7 @@ namespace carwash
         public static bool useLocal = !useApi;
         public static void InitialParams()
         {
-
+            //DBService.DropData();
         }
     }
 }

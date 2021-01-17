@@ -18,95 +18,64 @@ namespace carwash
     [XamlCompilation(XamlCompilationOptions.Compile)]   
     public partial class RegistrationPage : ContentPage
     {
-        private ErrorService errorService;
         public RegistrationPage()
         {
             InitializeComponent();
-            errorService = new ErrorService(ResultLabel);
         }
-
-        private void Registration(object sender, EventArgs e)
+        private async void Registration(object sender, EventArgs e)
         {
-            if (NumberPlaceholder.Text != null &&
-                PasswordPlaceholder != null &&
-                PasswordCPlaceholder.Text != null &&
-                NamePlaceholder.Text != null &&
-                numberCheck.IsMatch(NumberPlaceholder.Text) &&
-                passwordCheck.IsMatch(PasswordPlaceholder.Text) &&
-                PasswordCPlaceholder.Text == PasswordPlaceholder.Text &&
-                NamePlaceholder.Text != "")
+            if (NumberPlaceholder.Text!= null && ValidService.numberCheck.IsMatch(NumberPlaceholder.Text))
             {
-                if (Test.useApi)
+                if (PasswordPlaceholder.Text != null && ValidService.passwordCheck.IsMatch(PasswordPlaceholder.Text))
                 {
-                    var answer = UserService.Registration(
-                        ClearPhone(NumberPlaceholder.Text),
-                        PasswordPlaceholder.Text,
-                        PasswordCPlaceholder.Text,
-                        NamePlaceholder.Text);
-                    switch (answer.Status)
+                    if (PasswordCPlaceholder.Text != null && PasswordPlaceholder.Text == PasswordCPlaceholder.Text)
                     {
-                        case System.Net.HttpStatusCode.OK:
-                            if (answer.Token != "")
+                        if (NamePlaceholder.Text != null && ValidService.nameCheck.IsMatch(NamePlaceholder.Text))
+                        {
+                            var answer = UserService.Registration(
+                                ValidService.ClearPhone(NumberPlaceholder.Text),
+                                PasswordPlaceholder.Text,
+                                PasswordCPlaceholder.Text,
+                                NamePlaceholder.Text);
+                            switch (answer.Status)
                             {
-                                errorService.ClearErrors();
-                                Navigation.PopModalAsync();
+                                case System.Net.HttpStatusCode.OK:
+                                    await Navigation.PopModalAsync();
+                                    break;
+                                case System.Net.HttpStatusCode.InternalServerError:
+                                    await DisplayAlert("Ошибка регистрации", "Данный номер уже занят", "ОК");
+                                    break;
+                                default:
+                                    await DisplayAlert("Ошибка регистрации", $"{answer.Status}", "ОК");
+                                    break;
                             }
-                            break;
-                        case System.Net.HttpStatusCode.NotFound:
-                            errorService.AddError(Errors.ConnectionProblem);
-                            break;
-                        case System.Net.HttpStatusCode.InternalServerError:
-                            errorService.AddError(Errors.ThisPhoneAlreadyTaken);
-                            break;
-                        default:
-                            break;
+                        }
+                        else await DisplayAlert("Ошибка", $"Некорректный ввод имени", "ОK");
                     }
+                    else await DisplayAlert("Ошибка", $"Пароли должны совпадать", "ОK");
                 }
-                if (Test.useLocal)
-                    Navigation.PopModalAsync();
-            }                      
+                else await DisplayAlert("Ошибка", $"Пароль должен содержать шесть символов", "ОK");
+            }
+            else await DisplayAlert("Ошибка", $"Некорректный ввод номера", "ОK");               
         }
-        private void toBack(object sender, EventArgs e)
+        private async void toBack(object sender, EventArgs e)
         {
-            Navigation.PopModalAsync();
+            await Navigation.PopModalAsync();
         }   
-        private static Regex numberCheck = new Regex(@"(8[0-9]{10})|(\+7[0-9]{10})");
-        private static Regex passwordCheck = new Regex(@"[\w\d]{6,}");
         private void NumberPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!numberCheck.IsMatch(e.NewTextValue))
-                errorService.AddError("Номер должен начинаться с +7 или 8");
-            else
-                errorService.DelError("Номер должен начинаться с +7 или 8");
+
         }
         private void PasswordPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!passwordCheck.IsMatch(e.NewTextValue))
-                errorService.AddError("Пароль должен содержать 6 символов");
-            else
-                errorService.DelError("Пароль должен содержать 6 символов");
+
         }
         private void PasswordCPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (PasswordCPlaceholder.Text != PasswordPlaceholder.Text)
-                errorService.AddError("Пароли должны совпадать");
-            else
-                errorService.DelError("Пароли должны совпадать");
         }
         private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue == "")
-                errorService.AddError("Имя не может быть пустым");
-            else
-                errorService.DelError("Имя не может быть пустым");
-        }
-        private string ClearPhone(string phone)
-        {
-            if (phone.ToCharArray()[0] == '+')
-                return phone.Replace("+7", "");
-            if (phone.ToCharArray()[0] == '8')
-                return phone.Replace("8", "");
-            return "";
+
         }
     }
 }

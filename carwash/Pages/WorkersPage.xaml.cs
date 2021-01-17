@@ -13,13 +13,13 @@ using carwash.Data;
 namespace carwash.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class UsersWorkersPage : ContentPage
+    public partial class WorkersPage : ContentPage
     {
         public List<Worker> Workers { get; set; }
-        public UsersWorkersPage()
+        public WorkersPage()
         {
             InitializeComponent();
-            Workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+            Workers = DBService.GetWorkers();
             this.BindingContext = this;
         }
 

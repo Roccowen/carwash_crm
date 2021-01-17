@@ -10,6 +10,8 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,7 +45,7 @@
     <EmbeddedResource Update="Pages\SettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\UsersWorkersPage.xaml">
+    <EmbeddedResource Update="Pages\WorkersPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\WorkerRegistrationPage.xaml">
@@ -61,6 +63,9 @@
   <ItemGroup>
     <Compile Update="Pages\ClientRegistrationPage.xaml.cs">
       <DependentUpon>ClientRegistrationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\WorkersPage.xaml.cs">
+      <DependentUpon>WorkersPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

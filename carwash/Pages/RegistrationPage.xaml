@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:beh="clr-namespace:carwash.Behaviors"
              mc:Ignorable="d"
              x:Class="carwash.RegistrationPage"
              Title="Регистрация">
@@ -24,36 +25,45 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
-            <Label Text="Регистрация"
-                   class="Title"
-                   Grid.Column="0" Grid.Row="0"  Grid.ColumnSpan="2" />
             <Entry Placeholder="Введите имя"
                    x:Name="NamePlaceholder" 
-                   MaxLength="16"
+                   MaxLength="22"
                    TextChanged="NamePlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
+                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryTextValidator/>
+                </Entry.Behaviors>
+            </Entry>
             <Entry Placeholder="Введите номер телефона"
                    Keyboard="Telephone"
                    x:Name="NumberPlaceholder" 
-                   MaxLength="12"
+                   MaxLength="17"
                    TextChanged="NumberPlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"/>
+                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPhoneMask Mask="+7(XXX)XXX-XX-XX"/>
+                </Entry.Behaviors>
+            </Entry>
             <Entry Placeholder="Введите пароль" 
                    MaxLength="32"
                    IsPassword="True"
                    x:Name="PasswordPlaceholder"
                    TextChanged="PasswordPlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"/>
+                   Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPasswordValidator/>
+                </Entry.Behaviors>
+            </Entry>
             <Entry Placeholder="Повторите пароль" 
                    MaxLength="32"
                    IsPassword="True"
                    x:Name="PasswordCPlaceholder"
                    TextChanged="PasswordCPlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"/>
-            <Label Text=""
-                   x:Name ="ResultLabel"
-                   class="Information"
-                   Grid.Column="0" Grid.Row="5"  Grid.ColumnSpan="2"/>
+                   Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPasswordValidator/>
+                </Entry.Behaviors>
+            </Entry>
             <Button Text="Зарегестрироваться"
                     x:Name="RegistrationButton"
                     Clicked="Registration"

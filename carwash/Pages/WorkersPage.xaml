@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:carwash"
              mc:Ignorable="d"
              Title="Работники"
-             x:Class="carwash.Pages.UsersWorkersPage">
+             x:Class="carwash.Pages.WorkersPage">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>

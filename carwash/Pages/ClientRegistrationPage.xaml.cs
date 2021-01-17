@@ -20,38 +20,37 @@ namespace carwash.Pages
         {
             InitializeComponent();
         }
-
-        private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private async void BackButton_Clicked(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
         }
-
         private async void AddNewClient_Clicked(object sender, EventArgs e)
         {            
-            if (PhonePlaceholder.Text != null && 
-                NamePlaceholder.Text != null &&
-                PhonePlaceholder.Text != "" &&
-                NamePlaceholder.Text != "" &&
-                !new Regex("[0-9]").IsMatch(NamePlaceholder.Text))
+            if (PhonePlaceholder.Text != null && ValidService.numberCheck.IsMatch(PhonePlaceholder.Text))
             {
-                var client = ClientService.NewClient(NamePlaceholder.Text, PhonePlaceholder.Text, "{car:auto}", CurrentUserData.Token);
-                switch (client.Status)
+                if (NamePlaceholder.Text != null && ValidService.nameCheck.IsMatch(NamePlaceholder.Text))
                 {
-                    case System.Net.HttpStatusCode.OK:
-                        await Navigation.PopModalAsync();
-                        break;
-                    case System.Net.HttpStatusCode.Created:
-                        await Navigation.PopModalAsync();
-                        break;
-                    default:
-                        break;
+                    var client = ClientService.NewClient(NamePlaceholder.Text, ValidService.ClearPhone(PhonePlaceholder.Text), "{car:auto}", CurrentUserData.Token);
+                    switch (client.Status)
+                    {
+                        case System.Net.HttpStatusCode.OK:
+                            await Navigation.PopModalAsync();
+                            break;
+                        case System.Net.HttpStatusCode.Created:
+                            await Navigation.PopModalAsync();
+                            break;
+                        default:
+                            await DisplayAlert("Ошибка авторизации", $"{client.Status}", "ОK");
+                            break;
+                    }
                 }
+                else await DisplayAlert("Ошибка", $"Некорректный ввод имени", "ОK");
             }
+            else await DisplayAlert("Ошибка", $"Некорректный ввод номера", "ОK");
+        }
+        private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

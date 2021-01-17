@@ -1,12 +1,13 @@
 ﻿using carwash.Services;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using Xamarin.Forms;
 
 namespace carwash.Behaviors
 {
-    public class EntryTextValidator : Behavior<Entry>
+    public class EntryPasswordValidator : Behavior<Entry>
     {
         protected override void OnAttachedTo(Entry entry)
         {
@@ -22,7 +23,7 @@ namespace carwash.Behaviors
 
         void OnEntryTextChanged(object sender, TextChangedEventArgs args)
         {
-            bool isValid = ValidService.nameCheck.IsMatch(args.NewTextValue.ToLower());
+            bool isValid = ValidService.passwordCheck.IsMatch(args.NewTextValue);
             ((Entry)sender).TextColor = !isValid ? Color.Crimson : Color.Default;
             ((Entry)sender).BackgroundColor = !isValid ? Color.Default : Color.Default;
         }

@@ -17,15 +17,13 @@ namespace carwash.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WorkerRegistrationPage : ContentPage
     {
-        private ErrorService errorService;
         public WorkerRegistrationPage()
         {
             InitializeComponent();
-            errorService = new ErrorService(ResultLabel);
         }
-        private void Registration(object sender, EventArgs e)
+        private async void Registration(object sender, EventArgs e)
         {
-            if (NamePlaceholder.Text != null && NamePlaceholder.Text != "")
+            if (NamePlaceholder.Text != null && ValidService.nameCheck.IsMatch(NamePlaceholder.Text))
             {
                 var workerAnswer = WorkerService.NewWorker(CurrentUserData.Token, NamePlaceholder.Text);
                 switch (workerAnswer.Status)
@@ -33,26 +31,22 @@ namespace carwash.Pages
                     case HttpStatusCode.OK:
                         if (workerAnswer.Worker != null)
                         {
-                            errorService.ClearErrors();
-                            Navigation.PopModalAsync();
+                            await Navigation.PopModalAsync();
                         }
                         break;
                     default:
-                        errorService.AddError(Errors.ConnectionProblem);
+                        await DisplayAlert("Ошибка регистрации", $"{workerAnswer.Status}", "ОК");
                         break;
                 };
-            }         
+            }
+            else await DisplayAlert("Ошибка", $"Некорректный ввод имени", "ОK");       
         }
         private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue == "")
-                errorService.AddError(Errors.NameMustNotBeEmpty);
-            else
-                errorService.DelError(Errors.NameMustNotBeEmpty);
         }
-        private void toBack(object sender, EventArgs e)
+        private async void toBack(object sender, EventArgs e)
         {
-            Navigation.PopModalAsync();
+            await Navigation.PopModalAsync();
         }
     }
 }

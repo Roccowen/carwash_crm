@@ -1,27 +1,10 @@
 ﻿using System;
+using carwash.Models;
 
 namespace carwash.Data
 {
     public static class CurrentUserData
     {
-        public static int Id
-        {
-            get
-            {
-                object id = "0";
-                if (App.Current.Properties.TryGetValue("CurrentUserId", out id))
-                    return Convert.ToInt32(id);
-                else
-                {
-                    App.Current.Properties.Add("CurrentUserId", "0");
-                    return Convert.ToInt32(id);
-                }
-            }
-            set
-            {
-                App.Current.Properties["CurrentUserId"] = value.ToString();
-            }
-        }
         public static string Token
         {
             get
@@ -38,6 +21,24 @@ namespace carwash.Data
             set
             {
                 App.Current.Properties["CurrentUserToken"] = value;
+            }
+        }
+        public static int Id
+        {
+            get
+            {
+                object id = "0";
+                if (App.Current.Properties.TryGetValue("CurrentUserId", out id))
+                    return Convert.ToInt32(id);
+                else
+                {
+                    App.Current.Properties.Add("CurrentUserId", "0");
+                    return Convert.ToInt32(id);
+                }
+            }
+            set
+            {
+                App.Current.Properties["CurrentUserId"] = value.ToString();
             }
         }
         public static string Name 
@@ -131,5 +132,14 @@ namespace carwash.Data
             }
         }
         public static void ClearData() => App.Current.Properties.Clear();
+        public static void NewUserData(User user)
+        {
+            CurrentUserData.Id = user.Id;
+            CurrentUserData.MainUserId = user.MainUserId;
+            CurrentUserData.Name = user.Name;
+            CurrentUserData.Phone = user.Phone;
+            CurrentUserData.Settings = user.Settings;
+            CurrentUserData.Email = user.Email;
+        }
     }
 }
