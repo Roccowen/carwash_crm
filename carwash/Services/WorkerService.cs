@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Net;
 using RestSharp;
 using carwash.Models;
+using System.Text.Json.Serialization;
+using System;
 
 namespace carwash.Services
 {
@@ -18,7 +20,18 @@ namespace carwash.Services
             .AddHeader("Authorization", $"{AppData.TokenType} {token}");
             var response = AppData.AppRestClient.Execute(request);
             if (response.IsSuccessful)
-                return (response.StatusCode, JsonSerializer.Deserialize<List<Worker>>(response.Content));
+            {
+                var workersRaw = JsonSerializer.Deserialize<List<WorkerRaw>>(response.Content);
+                List<Worker> workers = new List<Worker>();
+                foreach (var workerRaw in workersRaw)
+                    workers.Add(new Worker
+                    {
+                        Id = workerRaw.Id,
+                        Name = workerRaw.Name,
+                        UserId = Convert.ToInt32(workerRaw.UserId)
+                    });
+                return (response.StatusCode, workers);
+            }               
             else
                 return (response.StatusCode, null);
         }
@@ -70,6 +83,15 @@ namespace carwash.Services
                 return (response.StatusCode, JsonSerializer.Deserialize<Worker>(response.Content));
             else
                 return (response.StatusCode, null);
+        }
+        private class WorkerRaw
+        {
+            [JsonPropertyName("id")]
+            public int Id { get; set; }
+            [JsonPropertyName("name")]
+            public string Name { get; set; }
+            [JsonPropertyName("user_id")]
+            public string UserId { get; set; }
         }
     }
 }

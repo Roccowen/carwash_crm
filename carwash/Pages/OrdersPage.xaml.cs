@@ -67,5 +67,15 @@ namespace carwash.Pages
         {
 
         }
+
+        private void DeleteContexMenu_Clicked(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void EditContexMenu_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

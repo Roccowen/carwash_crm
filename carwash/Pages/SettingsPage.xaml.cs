@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace carwash
+namespace carwash.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
@@ -45,10 +45,11 @@ namespace carwash
         {
             bool result = await DisplayAlert("Подтвердить действие", "Вы действительно хотите выйти из аккаунта?", "Да", "Нет");
             if (result)
-            {
+            {               
                 DBService.DropData();
                 CurrentUserData.ClearData();
                 await Navigation.PushModalAsync(new AuthorizationPage());
+                //(Application.Current).MainPage = new TabbedMainPage();
             }
         }
         private async void AddNewClietnButton_Clicked(object sender, EventArgs e)

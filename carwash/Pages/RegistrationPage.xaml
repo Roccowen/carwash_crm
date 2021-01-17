@@ -27,7 +27,7 @@
             </Grid.RowDefinitions>
             <Entry Placeholder="Введите имя"
                    x:Name="NamePlaceholder" 
-                   MaxLength="22"
+                   MaxLength="40"
                    TextChanged="NamePlaceholder_TextChanged"
                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                 <Entry.Behaviors>

@@ -6,9 +6,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              x:Class="carwash.Pages.OrdersPage"
-             x:Name="OrdersPageContent"
-             BackgroundColor="Default"
-             Title="Заказы">
+             x:Name="OrdersPageContent">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>
@@ -24,10 +22,19 @@
             </Grid.RowDefinitions>
             <ListView x:Name="OrdersList" 
                       ItemsSource="{Binding ordersInfo}"
-                      HasUnevenRows="True">
+                      HasUnevenRows="True"
+                      SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem Text="Удалить"
+                                          x:Name="DeleteContexMenu"
+                                          Clicked="DeleteContexMenu_Clicked"/>
+                                <MenuItem Text="Редакторивать"
+                                          x:Name="EditContexMenu"
+                                          Clicked="EditContexMenu_Clicked"/>
+                            </ViewCell.ContextActions>
                             <StackLayout>
                                 <Label Text="{Binding ClientName, StringFormat='Клиент: {0}'}" />
                                 <Label Text="{Binding OrderPrice, StringFormat='Цена: {0}₸'}"/>

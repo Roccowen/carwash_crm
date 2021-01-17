@@ -70,6 +70,8 @@ namespace carwash.Services
             if (response.IsSuccessful)
             {
                 var answer = JsonSerializer.Deserialize<List<Client>>(response.Content);
+                foreach (var client in answer)
+                    System.Diagnostics.Debug.WriteLine($"Client-{client.Id}-{client.Name}-{client.Phone}-{client.UserId}");
                 return (response.StatusCode, answer);
             }
             else

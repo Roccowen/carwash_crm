@@ -1,30 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="carwash.MainPage"
-             NavigationPage.HasNavigationBar="False"         
-             MasterBehavior="Popover"
-                  Title="MainPage">
-    <MasterDetailPage.Resources>
+             x:Class="carwash.Pages.MainPage">
+    <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
-    </MasterDetailPage.Resources>
-    <MasterDetailPage.Master>
-        <ContentPage Title="Master">
-            <ContentPage.Content>
-                <StackLayout>
-                    <Button Text="Рабочие"
-                            x:Name="WorkersButton"
-                            Clicked="WorkersButton_Clicked"/>
-                    <Button Text="Заказы"
-                        Clicked="OrderButtonClick"/>
-                    <Button Text="Настройки"
-                        Clicked="SettingsButtonClick"/>
-                </StackLayout>
-            </ContentPage.Content>
-        </ContentPage>
-    </MasterDetailPage.Master>
-
-</MasterDetailPage>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding currentUserGreeting}"
+                   VerticalOptions="CenterAndExpand"
+                   HorizontalOptions="CenterAndExpand"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -34,9 +34,11 @@ namespace carwash.Pages
                     switch (client.Status)
                     {
                         case System.Net.HttpStatusCode.OK:
+                            DBService.AddClient(client.Client);
                             await Navigation.PopModalAsync();
                             break;
                         case System.Net.HttpStatusCode.Created:
+                            DBService.AddClient(client.Client);
                             await Navigation.PopModalAsync();
                             break;
                         default:

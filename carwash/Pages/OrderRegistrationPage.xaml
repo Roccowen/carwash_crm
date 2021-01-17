@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:extforms="clr-namespace:carwash.Controls"
              xmlns:beh="clr-namespace:carwash.Behaviors"
              mc:Ignorable="d"
              Title="Новый заказ"
@@ -43,8 +44,9 @@
             <DatePicker x:Name="ReservationDataPicker"
                         MinimumDate="{x:Static sys:DateTime.Now}"
                         Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"/>
-            <TimePicker x:Name="ReservationTimePicker"                  
-                        Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"/>
+            <TimePicker
+                x:Name="ReservationTimePicker" 
+                Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"/>
             <Entry Placeholder="Введите цену"                  
                    x:Name="PricePlaceholder"
                    MaxLength="16"

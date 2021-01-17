@@ -3,6 +3,7 @@ using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using carwash.Models;
+using carwash.Pages;
 
 namespace carwash
 {
@@ -12,8 +13,10 @@ namespace carwash
         {
             InitializeComponent();
             Test.InitialParams();
-            
-            MainPage = new NavigationPage(new MainPage());
+
+            MainPage = new NavigationPage(new TabbedMainPage());
+            //MainPage = new NavigationPage(new TabbedMainPage());
+            //MainPage = new NavigationPage(new MainPageOld());
         }
 
         protected override void OnStart()

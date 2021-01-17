@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using carwash.Data;
 using carwash.Services;
 namespace carwash
 {
@@ -12,6 +13,9 @@ namespace carwash
         public static void InitialParams()
         {
             //DBService.DropData();
+            //System.Diagnostics.Debug.WriteLine($"${CurrentUserData.Name}$-----------------------------");
+            //CurrentUserData.ClearData();
+            //System.Diagnostics.Debug.WriteLine($"${CurrentUserData.Name}$-----------------------------");
         }
     }
 }

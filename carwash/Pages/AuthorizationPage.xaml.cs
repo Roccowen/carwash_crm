@@ -40,16 +40,25 @@ namespace carwash
                                 var orders = new List<Order>();
                                 var clients = new List<Client>();
                                 var workers = new List<Worker>();
-                                Task.Factory.StartNew(() =>
+                                System.Diagnostics.Debug.WriteLine("@AUTH ordersTask is start");
+                                var orderTask = Task.Factory.StartNew(() =>
                                 {
-                                    System.Diagnostics.Debug.WriteLine("@AUTH ordersTask is start");
                                     orders = OrderService.GetOrdersDebug(CurrentUserData.Token).Orders;
-                                    workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
-                                    clients = ClientService.GetClients(CurrentUserData.Token).Clients;
-                                }).ContinueWith(task =>
+                                });
+                                var workerTask = Task.Factory.StartNew(() =>
                                 {
-                                    DBService.DBFilling(orders, workers, clients);
-                                }, TaskScheduler.FromCurrentSynchronizationContext());
+                                    workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+                                });
+                                var clientsTask = Task.Factory.StartNew(() =>
+                                {
+                                    clients = ClientService.GetClients(CurrentUserData.Token).Clients;
+                                });
+                                Task.WaitAll(orderTask, workerTask, clientsTask);
+                                if (clients == null)
+                                {
+                                    throw new Exception();
+                                }
+                                DBService.DBFilling(orders, workers, clients);
                                 Navigation.PopModalAsync();
                             }
                             else

@@ -12,9 +12,33 @@ namespace carwash.Services
     {
         public static void DBFilling(List<Order> orders, List<Worker> workers, List<Client> clients)
         {
-            var context = new DBContext();
-            context.Clients.AddRange(clients);
-            context.Workers.AddRange(workers);
+            var context = new DBContext();         
+            try
+            {
+                context.Clients.AddRange(clients);
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e.InnerException.Message);
+                System.Diagnostics.Debug.Fail(e.Message);
+                System.Diagnostics.Debug.Fail(e.InnerException.Message);
+                throw;
+            }        
+            try
+            {
+                context.Workers.AddRange(workers);
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e.InnerException.Message);
+                System.Diagnostics.Debug.Fail(e.Message);
+                System.Diagnostics.Debug.Fail(e.InnerException.Message);
+                throw;
+            }
             System.Diagnostics.Debug.WriteLine("@DBFilling clients and workers is added");
             
             foreach (var order in orders)
@@ -42,7 +66,8 @@ namespace carwash.Services
                             {
                                 System.Diagnostics.Debug.WriteLine(e.Message);
                                 System.Diagnostics.Debug.WriteLine(e.InnerException.Message);
-
+                                System.Diagnostics.Debug.Fail(e.Message);
+                                System.Diagnostics.Debug.Fail(e.InnerException.Message);
                                 throw;
                             }                        
                         }
@@ -128,13 +153,31 @@ namespace carwash.Services
         {
             var context = new DBContext();
             context.Workers.Add(worker);
-            context.SaveChanges();
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Fail(e.Message);
+                System.Diagnostics.Debug.Fail(e.InnerException.Message);
+                throw;
+            }
         }
         public static void AddClient(Client client)
         {
             var context = new DBContext();
             context.Clients.Add(client);
-            context.SaveChanges();
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Fail(e.Message);
+                System.Diagnostics.Debug.Fail(e.InnerException.Message);
+                throw;
+            }
         }
         public static void FindOrAddWorker(Worker worker)
         {
@@ -265,6 +308,7 @@ namespace carwash.Services
         {
             DBContext context = new DBContext();
             context.Database.EnsureDeleted();
+            context.SaveChanges();
         }
     }
 }

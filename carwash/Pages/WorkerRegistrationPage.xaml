@@ -17,17 +17,14 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
                 <RowDefinition Height="50" />
-                <RowDefinition Height="40" />
-                <RowDefinition Height="40" />
-                <RowDefinition Height="60" />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Entry Placeholder="Введите имя"
                    x:Name="NamePlaceholder" 
-                   MaxLength="22"
+                   MaxLength="40"
                    TextChanged="NamePlaceholder_TextChanged"
-                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
                 <Entry.Behaviors>
                     <beh:EntryTextValidator/>
                 </Entry.Behaviors>
@@ -35,11 +32,11 @@
             <Button Text="Зарегестрировать"
                     x:Name="RegistrationButton"
                     Clicked="Registration"
-                    Grid.Column="0" Grid.Row="3"/>
+                    Grid.Column="0" Grid.Row="1"/>
             <Button Text="Назад" 
                     x:Name="BackButton"
                     Clicked="toBack"
-                    Grid.Column="1" Grid.Row="3"/>
+                    Grid.Column="1" Grid.Row="1"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

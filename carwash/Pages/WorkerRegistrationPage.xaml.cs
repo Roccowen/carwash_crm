@@ -28,11 +28,9 @@ namespace carwash.Pages
                 var workerAnswer = WorkerService.NewWorker(CurrentUserData.Token, NamePlaceholder.Text);
                 switch (workerAnswer.Status)
                 {
-                    case HttpStatusCode.OK:
-                        if (workerAnswer.Worker != null)
-                        {
-                            await Navigation.PopModalAsync();
-                        }
+                    case HttpStatusCode.Created:
+                        DBService.AddWorker(workerAnswer.Worker);
+                        await Navigation.PopModalAsync();
                         break;
                     default:
                         await DisplayAlert("Ошибка регистрации", $"{workerAnswer.Status}", "ОК");
