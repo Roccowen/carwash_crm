@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using carwash.Models;
 using carwash.Services;
+using carwash.Pages;
 using carwash.Data;
 using System.Net;
 using System.Collections.Generic;
@@ -18,6 +18,46 @@ namespace carwash
         public AuthorizationPage()
         {
             InitializeComponent();
+            if (CurrentUserData.Token != "")
+            {
+                System.Diagnostics.Debug.WriteLine("@AUTH_INIT Token is not empty");
+                var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
+                if (currentUserAnswer.Status == HttpStatusCode.OK)
+                {
+                    CurrentUserData.NewUserData(currentUserAnswer.User);
+                    System.Diagnostics.Debug.WriteLine("@AUTH_INIT threading start");
+                    var orders = new List<Order>();
+                    var clients = new List<Client>();
+                    var workers = new List<Worker>();
+                    System.Diagnostics.Debug.WriteLine("@AUTH_INIT ordersTask is start");
+                    var orderTask = Task.Factory.StartNew(() =>
+                    {
+                        orders = OrderService.GetOrdersDebug(CurrentUserData.Token).Orders;
+                    });
+                    var workerTask = Task.Factory.StartNew(() =>
+                    {
+                        workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+                    });
+                    var clientsTask = Task.Factory.StartNew(() =>
+                    {
+                        clients = ClientService.GetClients(CurrentUserData.Token).Clients;
+                    });
+                    Task.WaitAll(orderTask, workerTask, clientsTask);
+                    if (clients == null)
+                    {
+                        throw new Exception();
+                    }
+                    DBService.DBFilling(orders, workers, clients);
+                    ClearFields();
+                    Navigation.PushModalAsync(new TabbedMainPage());
+                }
+                else
+                    CurrentUserData.Id = -1;
+            }
+            if (CurrentUserData.Id == -1 || CurrentUserData.Token == "")
+            {
+                System.Diagnostics.Debug.WriteLine("@Token is empty or Id is -1");               
+            }
         }
         public void AuthorizationClicked(object sender, EventArgs e)
         {
@@ -59,7 +99,8 @@ namespace carwash
                                     throw new Exception();
                                 }
                                 DBService.DBFilling(orders, workers, clients);
-                                Navigation.PopModalAsync();
+                                ClearFields();
+                                Navigation.PushModalAsync(new TabbedMainPage());                               
                             }
                             else
                                 DisplayAlert("Ошибка получения данных", $"{currentUserAnswer.Status}", "ОK");
@@ -87,6 +128,11 @@ namespace carwash
         private void PasswordPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+        private void ClearFields()
+        {
+            NumberPlaceholder.Text = "";
+            PasswordPlaceholder.Text = "";
         }
     }
 }

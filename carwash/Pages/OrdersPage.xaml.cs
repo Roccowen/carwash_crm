@@ -18,7 +18,6 @@ namespace carwash.Pages
     public partial class OrdersPage : ContentPage
     {
         public ObservableCollection<OrderInfo> ordersInfo { get; set; }
-
         public OrdersPage()
         {
             InitializeComponent();
@@ -61,19 +60,33 @@ namespace carwash.Pages
         }
         private async void NewOrderButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new OrderRegistrationPage());
+            await Navigation.PushModalAsync(new OrderRegistrationPage(this, OrdersDataPicker.Date));
         }
         private void OrdersDataPicker_Focused(object sender, FocusEventArgs e)
         {
 
         }
 
-        private void DeleteContexMenu_Clicked(object sender, EventArgs e)
+        private async void DeleteContexMenu_Clicked(object sender, EventArgs e)
         {
-            
+            bool result = await DisplayAlert("Подтвердить действие", "Вы действительно хотите удалить заказ", "Да", "Нет");
+            if (result)
+            {
+                var listView = sender as MenuItem;
+                var selectedOrder = listView.BindingContext as OrderInfo;
+                ordersInfo.Remove(selectedOrder);
+
+
+                System.Diagnostics.Debug.WriteLine("@DeleteContexMenu_Clicked is suc");
+            }
         }
 
         private void EditContexMenu_Clicked(object sender, EventArgs e)
+        {
+            var selectedItem = sender as MenuItem;
+        }
+
+        private void AboutContexMenu_Clicked(object sender, EventArgs e)
         {
 
         }

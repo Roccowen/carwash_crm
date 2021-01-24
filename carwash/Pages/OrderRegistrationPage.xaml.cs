@@ -17,10 +17,15 @@ namespace carwash.Pages
     {
         public List<Client> Clients { get; set; }
         public List<Worker> Workers { get; set; }
-        public OrderRegistrationPage()
+        private OrdersPage ordersPageParent { get; set; }
+        private DateTime pickedDateTime { get; set; }
+        public OrderRegistrationPage(OrdersPage ordersPage, DateTime? _pickedDateTime=null)
         {
             InitializeComponent();
-            Clients = DBService.GetClients().Where(c => Convert.ToInt32(c.UserId) == CurrentUserData.Id).ToList();
+            ordersPageParent = ordersPage;
+            pickedDateTime = _pickedDateTime ?? _pickedDateTime.Value;
+            ReservationDataPicker.Date = pickedDateTime;
+            Clients = DBService.GetClients();
             Workers = DBService.GetWorkers();
             this.BindingContext = this;
         }
@@ -43,10 +48,12 @@ namespace carwash.Pages
                             {
                                 case System.Net.HttpStatusCode.Created:
                                     DBService.FindOrAddOrder(order.Order);
+                                    ordersPageParent.ordersInfo.Add(new OrderInfo(order.Order, client, worker));
                                     await Navigation.PopModalAsync();
                                     break;
                                 case System.Net.HttpStatusCode.OK:
                                     DBService.FindOrAddOrder(order.Order);
+                                    ordersPageParent.ordersInfo.Add(new OrderInfo(order.Order, client, worker));
                                     await Navigation.PopModalAsync();
                                     break;
                                 default:

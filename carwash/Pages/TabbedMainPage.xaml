@@ -11,6 +11,6 @@
             x:Class="carwash.Pages.TabbedMainPage">
     <carwashpages:MainPage IconImageSource="main.png"></carwashpages:MainPage>
     <carwashpages:OrdersPage IconImageSource="orders.png"></carwashpages:OrdersPage>
-
+    <carwashpages:СlientsPage IconImageSource="user.png"></carwashpages:СlientsPage>
     <carwashpages:SettingsPage IconImageSource="settings.png"></carwashpages:SettingsPage>
 </TabbedPage>

@@ -23,17 +23,21 @@
             <ListView x:Name="OrdersList" 
                       ItemsSource="{Binding ordersInfo}"
                       HasUnevenRows="True"
-                      SelectionMode="Single">
+                      SelectionMode="None"
+                      IsPullToRefreshEnabled="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.ContextActions>
-                                <MenuItem Text="Удалить"
-                                          x:Name="DeleteContexMenu"
-                                          Clicked="DeleteContexMenu_Clicked"/>
+                                <MenuItem Text="Подробнее"
+                                          x:Name="AboutContexMenu"
+                                          Clicked="AboutContexMenu_Clicked"/>
                                 <MenuItem Text="Редакторивать"
                                           x:Name="EditContexMenu"
                                           Clicked="EditContexMenu_Clicked"/>
+                                <MenuItem Text="Удалить"
+                                          x:Name="DeleteContexMenu"
+                                          Clicked="DeleteContexMenu_Clicked"/>
                             </ViewCell.ContextActions>
                             <StackLayout>
                                 <Label Text="{Binding ClientName, StringFormat='Клиент: {0}'}" />

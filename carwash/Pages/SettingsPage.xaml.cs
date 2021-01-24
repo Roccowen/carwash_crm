@@ -48,7 +48,7 @@ namespace carwash.Pages
             {               
                 DBService.DropData();
                 CurrentUserData.ClearData();
-                await Navigation.PushModalAsync(new AuthorizationPage());
+                await Navigation.PopModalAsync();
                 //(Application.Current).MainPage = new TabbedMainPage();
             }
         }

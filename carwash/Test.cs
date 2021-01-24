@@ -12,9 +12,9 @@ namespace carwash
         public static bool useLocal = !useApi;
         public static void InitialParams()
         {
+            //CurrentUserData.ClearData();
             //DBService.DropData();
             //System.Diagnostics.Debug.WriteLine($"${CurrentUserData.Name}$-----------------------------");
-            //CurrentUserData.ClearData();
             //System.Diagnostics.Debug.WriteLine($"${CurrentUserData.Name}$-----------------------------");
         }
     }

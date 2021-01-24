@@ -14,7 +14,7 @@ namespace carwash
             InitializeComponent();
             Test.InitialParams();
 
-            MainPage = new NavigationPage(new TabbedMainPage());
+            MainPage = new NavigationPage(new AuthorizationPage());
             //MainPage = new NavigationPage(new TabbedMainPage());
             //MainPage = new NavigationPage(new MainPageOld());
         }

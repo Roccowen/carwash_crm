@@ -15,8 +15,16 @@ namespace carwash.Services
             var context = new DBContext();         
             try
             {
-                context.Clients.AddRange(clients);
-                context.SaveChanges();
+                foreach (var client in clients)
+                {
+                    if (context.Clients.Find(client.Id) is null)
+                    {
+                        context.Clients.Add(client);
+                        System.Diagnostics.Debug.WriteLine($"@Added new client {client.Id}-{client.Name}");
+                        context.SaveChanges();
+                    }
+                    else System.Diagnostics.Debug.WriteLine($"@Not added new client {client.Id}-{client.Name}");
+                }
             }
             catch (Exception e)
             {
@@ -28,8 +36,15 @@ namespace carwash.Services
             }        
             try
             {
-                context.Workers.AddRange(workers);
-                context.SaveChanges();
+                foreach (var worker in workers)
+                {
+                    if (context.Workers.Find(worker.Id) is null)
+                    {
+                        context.Workers.Add(worker);
+                        System.Diagnostics.Debug.WriteLine($"@Added new worker {worker.Id}-{worker.Name}");
+                    }
+                    else System.Diagnostics.Debug.WriteLine($"@Not added new worker {worker.Id}-{worker.Name}");
+                }
             }
             catch (Exception e)
             {
