@@ -2,13 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using Xamarin.Essentials;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace carwash
 {
-    class 
+    class
         DBContext : DbContext
     {
         public DbSet<Worker> Workers { get; set; }
@@ -21,7 +18,7 @@ namespace carwash
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

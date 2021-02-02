@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:beh="clr-namespace:carwash.Behaviors;assembly=carwash"
+             mc:Ignorable="d"
+             x:Class="crm.Pages.RegistrationPage"
+             Title="Регистрация">
+    <ContentPage.Resources>
+        <StyleSheet Source = "/styles.css"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <Entry Placeholder="Введите имя"
+                   x:Name="NamePlaceholder" 
+                   MaxLength="40"
+                   TextChanged="NamePlaceholder_TextChanged"
+                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryTextValidator/>
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Введите номер телефона"
+                   Keyboard="Telephone"
+                   x:Name="NumberPlaceholder" 
+                   MaxLength="17"
+                   TextChanged="NumberPlaceholder_TextChanged"
+                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPhoneMask Mask="+7(XXX)XXX-XX-XX"/>
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Введите пароль" 
+                   MaxLength="32"
+                   IsPassword="True"
+                   x:Name="PasswordPlaceholder"
+                   TextChanged="PasswordPlaceholder_TextChanged"
+                   Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPasswordValidator/>
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Повторите пароль" 
+                   MaxLength="32"
+                   IsPassword="True"
+                   x:Name="PasswordCPlaceholder"
+                   TextChanged="PasswordCPlaceholder_TextChanged"
+                   Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryPasswordValidator/>
+                </Entry.Behaviors>
+            </Entry>
+            <Button Text="Зарегестрироваться"
+                    x:Name="RegistrationButton"
+                    Clicked="Registration"
+                    Grid.Column="0" Grid.Row="6"/>
+            <Button Text="Назад" 
+                    x:Name="BackButton"
+                    Clicked="toBack"
+                    Grid.Column="1" Grid.Row="6"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

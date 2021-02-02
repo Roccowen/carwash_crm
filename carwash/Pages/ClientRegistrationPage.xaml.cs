@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
+﻿using carwash.Data;
+using carwash.Services;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using carwash.Models;
-using carwash.Services;
-using carwash.Data;
 
 namespace carwash.Pages
 {
@@ -25,7 +18,7 @@ namespace carwash.Pages
             await Navigation.PopModalAsync();
         }
         private async void AddNewClient_Clicked(object sender, EventArgs e)
-        {            
+        {
             if (PhonePlaceholder.Text != null && ValidService.numberCheck.IsMatch(PhonePlaceholder.Text))
             {
                 if (NamePlaceholder.Text != null && ValidService.nameCheck.IsMatch(NamePlaceholder.Text))

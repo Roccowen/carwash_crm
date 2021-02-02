@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using carwash.Services;
 using carwash.Models;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace carwash_tests
 {
@@ -13,35 +17,32 @@ namespace carwash_tests
             var currentUserToken = UserService.Authorization("7777777777", "qwerty").Token;
             var currentUser = UserService.GetCurrentUser(currentUserToken).User;
             var clients = ClientService.GetClients(currentUserToken).Clients;
-            ShowCLients(clients);
-            var orders = OrderService.GetOrdersDebug(currentUserToken).Orders;
-            ShowOrders(orders);
+            var_dump(clients);         
             var workers = WorkerService.GetWorkers(currentUserToken).Workers;
-            ShowWorkers(workers);
-            DBService.DBFilling(orders, workers, clients);
-            var clientsDB = DBService.GetClients();
-            ShowCLients(clientsDB);
-            var ordersDB = DBService.GetOrders();
-            ShowOrders(ordersDB);
-            var workersDB = DBService.GetWorkers();
-            ShowWorkers(workersDB);
-            Console.ReadKey();
+            var_dump(workers);
+            var orders = OrderService.GetOrders(currentUserToken).Orders;
+            var_dump(orders);
+        }
 
-        }
-        static void ShowCLients(List<Client> clients)
+        public static void var_dump(Object obj)
         {
-            foreach (var client in clients)
-                Console.WriteLine($"Client - {client.Id} {client.Name} {client.Phone} {client.UserId}");
+            var type = obj.GetType();
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).OrderBy(f => f.Name);
+            Regex regex = new Regex(@"\<.*?\>");
+            Debug.Write($"{type} ");
+            Console.Write($"{type} ");
+            foreach (var field in fields)
+            {
+                Debug.Write($"{regex.Match(field.Name).Value.Replace("<", "").Replace(">", "")}-{field.GetValue(obj)} ");
+                Console.Write($"{regex.Match(field.Name).Value.Replace("<", "").Replace(">", "")}-{field.GetValue(obj)} ");
+            }              
+            Debug.Write("\n");
+            Console.Write("\n");
         }
-        static void ShowOrders(List<Order> orders)
+        public static void var_dump(IEnumerable<object> objs)
         {
-            foreach (var order in orders)
-                Console.WriteLine($"Order - {order.Id} {order.DateOfReservation} {order.Price} {order.Status} {order.Type} {order.UserId} {order.WorkerId}");
-        }
-        static void ShowWorkers(List<Worker> workers)
-        {
-            foreach (var worker in workers)
-                Console.WriteLine($"Worker - {worker.Id} {worker.Name} {worker.UserId}");
+            foreach (var obj in objs)
+                var_dump(obj);
         }
     }
 }

@@ -1,16 +1,13 @@
-﻿using carwash.Pages;
+﻿using carwash.Data;
+using carwash.Models;
+using carwash.Pages;
 using carwash.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-
-using carwash.Data;
-using carwash.Models;
 
 namespace carwash
 {
@@ -35,7 +32,7 @@ namespace carwash
                     System.Diagnostics.Debug.WriteLine("@MP ordersTask is start");
                     Task.Factory.StartNew(() =>
                     {
-                        orders = OrderService.GetOrdersDebug(CurrentUserData.Token).Orders;
+                        orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
                         workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
                         clients = ClientService.GetClients(CurrentUserData.Token).Clients;
                     }).ContinueWith(task =>
@@ -51,9 +48,9 @@ namespace carwash
                 System.Diagnostics.Debug.WriteLine("@Token is not empty or Id is -1");
                 Navigation.PushModalAsync(new AuthorizationPage());
             }
-                
+
             Detail = new NavigationPage(new MainPage());
-            IsPresented = false;            
+            IsPresented = false;
         }
         public void SettingsButtonClick(object sender, EventArgs e)
         {

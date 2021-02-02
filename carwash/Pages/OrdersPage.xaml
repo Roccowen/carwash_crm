@@ -42,7 +42,7 @@
                             <StackLayout>
                                 <Label Text="{Binding ClientName, StringFormat='Клиент: {0}'}" />
                                 <Label Text="{Binding OrderPrice, StringFormat='Цена: {0}₸'}"/>
-                                <Label Text="{Binding OrderDateOfReservation, StringFormat='Дата: {0}'}"/>
+                                <Label Text="{Binding OrderDateOfReservation, StringFormat='Время: {0:HH:mm}'}"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

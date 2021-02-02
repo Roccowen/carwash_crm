@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using carwash.Data;
-using carwash.Models;
+﻿using carwash.Models;
 using carwash.Services;
+using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using System.Threading;
 
 namespace carwash.Pages
 {
@@ -23,9 +17,10 @@ namespace carwash.Pages
             InitializeComponent();
             ordersInfo = new ObservableCollection<OrderInfo>();
 
-            var orderInfosDB = DBService.GetOrderInfos();
+            var orderInfosDB = DBService.GetSortedOrderForDateInfos();
             orderInfosDB = orderInfosDB.Where(
                 i => i.OrderDateOfReservation.ToString("yyyy-MM-dd") == DateTime.Now.Date.ToString("yyyy-MM-dd"))
+                .OrderBy(o => o.OrderDateOfReservation)
                 .ToList();
             if (orderInfosDB.Count != 0)
             {
@@ -40,10 +35,11 @@ namespace carwash.Pages
         private void OrdersDataPicker_Unfocused(object sender, FocusEventArgs e)
         {
             ordersInfo.Clear();
-            var orderInfosDB = DBService.GetOrderInfos();
+            var orderInfosDB = DBService.GetSortedOrderForDateInfos();
             System.Diagnostics.Debug.WriteLine($"@ orderInfosDB count - {orderInfosDB.Count}");
             orderInfosDB = orderInfosDB.Where(
                 i => i.OrderDateOfReservation.ToString("yyyy-MM-dd") == OrdersDataPicker.Date.ToString("yyyy-MM-dd"))
+                .OrderBy(o => o.OrderDateOfReservation)
                 .ToList();
             System.Diagnostics.Debug.WriteLine($"@ orderInfosDB count after - {orderInfosDB.Count}");
             if (orderInfosDB.Count != 0)
@@ -87,6 +83,11 @@ namespace carwash.Pages
         }
 
         private void AboutContexMenu_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OrdersList_ItemTapped(object sender, ItemTappedEventArgs e)
         {
 
         }

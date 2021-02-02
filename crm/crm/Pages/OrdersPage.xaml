@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             x:Class="crm.Pages.OrdersPage"
+             x:Name="OrdersPageContent">
+    <ContentPage.Resources>
+        <StyleSheet Source = "/styles.css"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <ListView x:Name="OrdersList" 
+                      ItemsSource="{Binding ordersInfo}"
+                      HasUnevenRows="True"
+                      SelectionMode="None"
+                      IsPullToRefreshEnabled="False"
+                      ItemTapped="OrdersList_ItemTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout BackgroundColor="{Binding Color}">
+                                <Label Text="{Binding ClientName, StringFormat='Клиент: {0}'}" />
+                                <Label Text="{Binding OrderDateOfReservation, StringFormat='Время: {0:HH:mm}'}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <DatePicker x:Name="OrdersDataPicker"
+                        Unfocused="OrdersDataPicker_Unfocused"
+                        MinimumDate="{x:Static sys:DateTime.Now}"
+                        Grid.Column="0" Grid.Row="1"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

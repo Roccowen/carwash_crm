@@ -92,6 +92,7 @@ namespace crm.Droid
                 .SetSmallIcon(Resource.Drawable.main)
                 .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate);
 
+            builder.SetAutoCancel(true);
             Notification notification = builder.Build();
             manager.Notify(messageId++, notification);
         }

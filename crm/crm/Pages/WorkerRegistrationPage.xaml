@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:beh="clr-namespace:carwash.Behaviors;assembly=carwash"
+             mc:Ignorable="d"
+             x:Class="crm.Pages.WorkerRegistrationPage"
+             Title="Новый работник">
+    <ContentPage.Resources>
+        <StyleSheet Source = "/styles.css"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <Entry Placeholder="Введите имя"
+                   x:Name="NamePlaceholder" 
+                   MaxLength="40"
+                   TextChanged="NamePlaceholder_TextChanged"
+                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                <Entry.Behaviors>
+                    <beh:EntryTextValidator/>
+                </Entry.Behaviors>
+            </Entry>
+            <Button Text="Зарегестрировать"
+                    x:Name="RegistrationButton"
+                    Clicked="Registration"
+                    Grid.Column="0" Grid.Row="1"/>
+            <Button Text="Назад" 
+                    x:Name="BackButton"
+                    Clicked="toBack"
+                    Grid.Column="1" Grid.Row="1"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

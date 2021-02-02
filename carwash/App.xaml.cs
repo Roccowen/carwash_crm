@@ -1,9 +1,4 @@
-﻿using carwash.Services;
-using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using carwash.Models;
-using carwash.Pages;
+﻿using Xamarin.Forms;
 
 namespace carwash
 {
@@ -12,11 +7,7 @@ namespace carwash
         public App()
         {
             InitializeComponent();
-            Test.InitialParams();
-
             MainPage = new NavigationPage(new AuthorizationPage());
-            //MainPage = new NavigationPage(new TabbedMainPage());
-            //MainPage = new NavigationPage(new MainPageOld());
         }
 
         protected override void OnStart()

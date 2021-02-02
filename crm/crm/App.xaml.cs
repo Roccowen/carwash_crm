@@ -1,6 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using crm.Pages;
 
 namespace crm
 {
@@ -9,8 +10,7 @@ namespace crm
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainPage();
+            MainPage = new AuthorizationPage();
         }
 
         protected override void OnStart()

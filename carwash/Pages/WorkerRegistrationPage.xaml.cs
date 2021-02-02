@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using carwash.Data;
+using carwash.Services;
+using System;
 using System.Net;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using carwash.Models;
-using carwash.Data;
-using carwash.Services;
-using RestSharp;
 
 namespace carwash.Pages
 {
@@ -37,7 +30,7 @@ namespace carwash.Pages
                         break;
                 };
             }
-            else await DisplayAlert("Ошибка", $"Некорректный ввод имени", "ОK");       
+            else await DisplayAlert("Ошибка", $"Некорректный ввод имени", "ОK");
         }
         private void NamePlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {

@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-
+﻿using carwash.Services;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using System.Threading;
-using carwash.Models;
-using carwash.Services;
 
 namespace carwash
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]   
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RegistrationPage : ContentPage
     {
         public RegistrationPage()
@@ -24,7 +14,7 @@ namespace carwash
         }
         private async void Registration(object sender, EventArgs e)
         {
-            if (NumberPlaceholder.Text!= null && ValidService.numberCheck.IsMatch(NumberPlaceholder.Text))
+            if (NumberPlaceholder.Text != null && ValidService.numberCheck.IsMatch(NumberPlaceholder.Text))
             {
                 if (PasswordPlaceholder.Text != null && ValidService.passwordCheck.IsMatch(PasswordPlaceholder.Text))
                 {
@@ -56,12 +46,12 @@ namespace carwash
                 }
                 else await DisplayAlert("Ошибка", $"Пароль должен содержать шесть символов", "ОK");
             }
-            else await DisplayAlert("Ошибка", $"Некорректный ввод номера", "ОK");               
+            else await DisplayAlert("Ошибка", $"Некорректный ввод номера", "ОK");
         }
         private async void toBack(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
-        }   
+        }
         private void NumberPlaceholder_TextChanged(object sender, TextChangedEventArgs e)
         {
 

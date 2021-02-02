@@ -1,5 +1,5 @@
-﻿using System;
-using carwash.Models;
+﻿using carwash.Models;
+using System;
 
 namespace carwash.Data
 {
@@ -41,7 +41,7 @@ namespace carwash.Data
                 App.Current.Properties["CurrentUserId"] = value.ToString();
             }
         }
-        public static string Name 
+        public static string Name
         {
             get
             {

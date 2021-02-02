@@ -1,86 +1,41 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Diagnostics;
-using RestSharp;
-using carwash.Models;
-using System;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
+﻿using carwash.Models;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Converters;
+using RestSharp;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace carwash.Services
 {
     public static class OrderService
     {
-        public static (HttpStatusCode Status, Order Order) NewOrder(DateTime reserveDate, 
-                                                                    int clientId, 
-                                                                    int workerId, 
-                                                                    int price,                                            
-                                                                    string token,
-                                                                    string type="full",
-                                                                    int status=0)
+        private static bool _public = AppData.ClientServicePublic;
+        private static int OrdersCntInc(int i = 1) => AppData.OrdersCount += i;
+        private static int OrdersCntGet() => AppData.OrdersCount;
+        public static (HttpStatusCode Status, string message) DelOrderById(int id, string token)
         {
-            var request = new RestRequest(@"/api/order", Method.POST)
-                .AddHeader("Authorization", $"{AppData.TokenType} {token}")
-                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
-                .AddParameter("reserve_date", reserveDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                .AddParameter("client_id", clientId)
-                .AddParameter("worker_id", workerId)
-                .AddParameter("price", price)
-                .AddParameter("type", type)
-                .AddParameter("status", status);
-            var response = AppData.AppRestClient.Execute(request);
-            if (response.IsSuccessful)
-            {
-                var orderRaw = System.Text.Json.JsonSerializer.Deserialize<NewOrderRaw>(response.Content);
-                Debug.WriteLine($"OrderRaw{orderRaw.Id} - {orderRaw.DateOfReservation}");
-                Debug.WriteLine($"{DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null)}");
-                var order = new Order
-                {
-                    ClientId = Convert.ToInt32(orderRaw.ClientId),
-                    DateOfReservation = DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null),
-                    Id = orderRaw.Id,
-                    Price = Convert.ToInt32(orderRaw.Price),
-                    Status = orderRaw.Status,
-                    Type = orderRaw.Type,
-                    UserId = orderRaw.UserId,
-                    WorkerId = Convert.ToInt32(orderRaw.WorkerId)
-                };
-                return (response.StatusCode, order);
-            }                
+            if (_public)
+                return DelOrderByIdPublic(id, token);
             else
-                return (response.StatusCode, null);
+                return DelOrderByIdDebug(id);
         }
-        public static (HttpStatusCode Status, Order Order) NewOrderNotWorking(DateTime reserveDate,
-                                                            int clientId,
-                                                            int workerId,
-                                                            int price,
-                                                            string token,
-                                                            string type = "full",
-                                                            int status = 0)
+        public static (HttpStatusCode Status, List<Order> Orders) GetOrders(string token)
         {
-            var request = new RestRequest(@"/api/order", Method.POST)
-                .AddHeader("Authorization", $"{AppData.TokenType} {token}")
-                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
-                .AddParameter("reserve_date", reserveDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                .AddParameter("client_id", clientId)
-                .AddParameter("worker_id", workerId)
-                .AddParameter("price", price)
-                .AddParameter("type", type)
-                .AddParameter("status", status);
-            var response = AppData.AppRestClient.Execute(request);
-            if (response.IsSuccessful)
-            {
-                var createdOrder = JsonConvert.DeserializeObject<Order>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
-                Debug.WriteLine($"@NewOrder {createdOrder.Id}-{createdOrder.Client}-{createdOrder.Price}");
-                return (response.StatusCode, createdOrder);
-            }
+            if (_public)
+                return GetOrdersPublic(token);
             else
-                return (response.StatusCode, null);
+                return GetOrdersDebug(token);
+        }
+        public static (HttpStatusCode Status, Order Order) NewOrder(DateTime reserveDate, int clientId, int workerId, int price, string token, string type = "full", int status = 0)
+        {
+            if (_public)
+                return NewOrderPublic(reserveDate, clientId, workerId, price, token, type, status);
+            else
+                return NewOrderDebug(reserveDate, clientId, workerId, price, token, type, status);
         }
         public static (HttpStatusCode Status, Order Order) GetOrderById(string orderId, string token)
         {
@@ -92,13 +47,13 @@ namespace carwash.Services
             else
                 return (response.StatusCode, null);
         }
-        public static (HttpStatusCode Status, List<Order> Orders) GetOrdersDebug(string token)
+        private static (HttpStatusCode Status, List<Order> Orders) GetOrdersPublic(string token)
         {
             var request = new RestRequest(@"/api/order", Method.GET)
             {
                 AlwaysMultipartFormData = true
             }
-                .AddHeader("Authorization", $"{AppData.TokenType} {token}");
+            .AddHeader("Authorization", $"{AppData.TokenType} {token}");
             var response = AppData.AppRestClient.Execute(request);
             if (response.IsSuccessful)
             {
@@ -119,27 +74,85 @@ namespace carwash.Services
                         UserId = orderRaw.UserId,
                         WorkerId = orderRaw.WorkerId
                     });
-                } 
+                }
                 return (response.StatusCode, orders);
-            }        
+            }
             else
                 return (response.StatusCode, null);
         }
-        public static (HttpStatusCode Status, List<Order> Orders) GetOrders(string token)
+        private static (HttpStatusCode Status, List<Order> Orders) GetOrdersDebug(string token)
         {
-            var request = new RestRequest(@"/api/order", Method.GET)
+            var Orders = new List<Order>();
+            for (int i = 0; i < _random.Next(15, 40); i++)
             {
-                AlwaysMultipartFormData = true
+                Orders.Add(new Order()
+                {
+                    Id = OrdersCntInc(),
+                    ClientId = _random.Next(1, AppData.ClientsCount),
+                    WorkerId = _random.Next(1, AppData.WorkersCount),
+                    Price = _random.Next(1, 50) * 100,
+                    Type = "full",
+                    Status = "0",
+                    DateOfReservation = GetRandomDay(),
+                    UserId = 0
+                });
             }
-                .AddHeader("Authorization", $"{AppData.TokenType} {token}");
+            return (HttpStatusCode.OK, Orders);
+        }
+        private static (HttpStatusCode Status, Order Order) NewOrderPublic(DateTime reserveDate, int clientId, int workerId, int price, string token, string type = "full", int status = 0)
+        {
+            var request = new RestRequest(@"/api/order", Method.POST)
+                    .AddHeader("Authorization", $"{AppData.TokenType} {token}")
+                    .AddHeader("Content-Type", "application/x-www-form-urlencoded")
+                    .AddParameter("reserve_date", reserveDate.ToString("yyyy-MM-dd HH:mm:ss"))
+                    .AddParameter("client_id", clientId)
+                    .AddParameter("worker_id", workerId)
+                    .AddParameter("price", price)
+                    .AddParameter("type", type)
+                    .AddParameter("status", status);
             var response = AppData.AppRestClient.Execute(request);
             if (response.IsSuccessful)
-                return (response.StatusCode, JsonConvert.DeserializeObject<List<Order>>(response.Content, new JsonSerializerSettings 
-                { 
-                    DateFormatString = "yyyy-MM-dd HH:mm:ss" 
-                }));
+            {
+                var orderRaw = System.Text.Json.JsonSerializer.Deserialize<NewOrderRaw>(response.Content);
+                Debug.WriteLine($"OrderRaw{orderRaw.Id} - {orderRaw.DateOfReservation}");
+                Debug.WriteLine($"{DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null)}");
+                var order = new Order
+                {
+                    ClientId = Convert.ToInt32(orderRaw.ClientId),
+                    DateOfReservation = DateTime.ParseExact(orderRaw.DateOfReservation, "yyyy-MM-dd HH:mm:ss", null),
+                    Id = orderRaw.Id,
+                    Price = Convert.ToInt32(orderRaw.Price),
+                    Status = orderRaw.Status,
+                    Type = orderRaw.Type,
+                    UserId = orderRaw.UserId,
+                    WorkerId = Convert.ToInt32(orderRaw.WorkerId)
+                };
+                return (response.StatusCode, order);
+            }
             else
                 return (response.StatusCode, null);
+        }       
+        private static (HttpStatusCode Status, Order Order) NewOrderDebug(DateTime reserveDate, int clientId, int workerId, int price, string token, string type = "full", int status = 0)
+        {
+            return (HttpStatusCode.OK, new Order
+            {
+                Id = OrdersCntInc(),
+                ClientId = clientId,
+                WorkerId = workerId,
+                Price = price,
+                Type = type,
+                Status = status.ToString(),
+                UserId = 0,
+                DateOfReservation = reserveDate
+            });
+        }
+        private static (HttpStatusCode Status, string message) DelOrderByIdPublic(int id, string token)
+        {
+            throw new MissingMethodException();
+        }
+        private static (HttpStatusCode Status, string message) DelOrderByIdDebug(int id)
+        {
+            return (HttpStatusCode.OK, "good");
         }
         public static async Task<(HttpStatusCode Status, List<Order> Orders)> GetOrdersAsync(string token)
         {
@@ -149,33 +162,6 @@ namespace carwash.Services
             var response = await responseTask;
             if (response.IsSuccessful)
                 return (response.StatusCode, JsonConvert.DeserializeObject<List<Order>>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" }));
-            else
-                return (response.StatusCode, null);
-        }
-        public static (HttpStatusCode Status, Order Order) ChangeOrder(string orderId,
-                                                                        string token, 
-                                                                        DateTime newReserveDateString, 
-                                                                        int newClientId, 
-                                                                        int newWorkerId, 
-                                                                        int newPrice, 
-                                                                        string newType, 
-                                                                        string newStatus)
-        {
-            var request = new RestRequest($@"/api/client/{orderId}", Method.PUT)
-                .AddHeader("Authorization", $"{AppData.TokenType} {token}")
-                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
-                .AddParameter("reserve_date", newReserveDateString.ToString("yyyy-MM-dd HH:mm:ss"))
-                .AddParameter("status", newClientId)
-                .AddParameter("client_id", newWorkerId)
-                .AddParameter("worker_id", newPrice)
-                .AddParameter("price", newType)
-                .AddParameter("type", newStatus);
-            var response = AppData.AppRestClient.Execute(request);
-            if (response.IsSuccessful)
-            {
-                var answer = JsonConvert.DeserializeObject<ChangeOrderDataAnswer>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss " });
-                return (response.StatusCode, answer.Order);
-            }
             else
                 return (response.StatusCode, null);
         }
@@ -221,6 +207,65 @@ namespace carwash.Services
             public string Type { get; set; }
             [JsonPropertyName("status")]
             public string Status { get; set; }
+        }
+        private static (HttpStatusCode Status, List<Order> Orders) GetOrdersNW(string token)
+        {
+            var request = new RestRequest(@"/api/order", Method.GET)
+            {
+                AlwaysMultipartFormData = true
+            }
+                .AddHeader("Authorization", $"{AppData.TokenType} {token}");
+            var response = AppData.AppRestClient.Execute(request);
+            if (response.IsSuccessful)
+                return (response.StatusCode, JsonConvert.DeserializeObject<List<Order>>(response.Content, new JsonSerializerSettings
+                {
+                    DateFormatString = "yyyy-MM-dd HH:mm:ss"
+                }));
+            else
+                return (response.StatusCode, null);
+        }
+        private static (HttpStatusCode Status, Order Order) ChangeOrderNW(string orderId, string token, DateTime newReserveDateString, int newClientId, int newWorkerId, int newPrice, string newType, string newStatus)
+        {
+            var request = new RestRequest($@"/api/client/{orderId}", Method.PUT)
+                .AddHeader("Authorization", $"{AppData.TokenType} {token}")
+                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
+                .AddParameter("reserve_date", newReserveDateString.ToString("yyyy-MM-dd HH:mm:ss"))
+                .AddParameter("status", newClientId)
+                .AddParameter("client_id", newWorkerId)
+                .AddParameter("worker_id", newPrice)
+                .AddParameter("price", newType)
+                .AddParameter("type", newStatus);
+            var response = AppData.AppRestClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var answer = JsonConvert.DeserializeObject<ChangeOrderDataAnswer>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss " });
+                return (response.StatusCode, answer.Order);
+            }
+            else
+                return (response.StatusCode, null);
+        }
+        private static Random _random = new Random();
+        private static DateTime GetRandomDay() => DateTime.Today.AddDays(_random.Next(-3, 3)).AddHours(_random.Next(9, 19));
+        private static (HttpStatusCode Status, Order Order) NewOrderNW(DateTime reserveDate, int clientId, int workerId, int price, string token, string type = "full", int status = 0)
+        {
+            var request = new RestRequest(@"/api/order", Method.POST)
+                .AddHeader("Authorization", $"{AppData.TokenType} {token}")
+                .AddHeader("Content-Type", "application/x-www-form-urlencoded")
+                .AddParameter("reserve_date", reserveDate.ToString("yyyy-MM-dd HH:mm:ss"))
+                .AddParameter("client_id", clientId)
+                .AddParameter("worker_id", workerId)
+                .AddParameter("price", price)
+                .AddParameter("type", type)
+                .AddParameter("status", status);
+            var response = AppData.AppRestClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var createdOrder = JsonConvert.DeserializeObject<Order>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
+                Debug.WriteLine($"@NewOrder {createdOrder.Id}-{createdOrder.Client}-{createdOrder.Price}");
+                return (response.StatusCode, createdOrder);
+            }
+            else
+                return (response.StatusCode, null);
         }
     }
 }

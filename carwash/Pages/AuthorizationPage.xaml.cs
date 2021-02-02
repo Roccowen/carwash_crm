@@ -1,14 +1,13 @@
-﻿using System;
-
+﻿using carwash.Data;
+using carwash.Models;
+using carwash.Pages;
+using carwash.Services;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using carwash.Models;
-using carwash.Services;
-using carwash.Pages;
-using carwash.Data;
-using System.Net;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace carwash
 {
@@ -30,10 +29,10 @@ namespace carwash
                     var clients = new List<Client>();
                     var workers = new List<Worker>();
                     System.Diagnostics.Debug.WriteLine("@AUTH_INIT ordersTask is start");
-                    var orderTask = Task.Factory.StartNew(() =>
-                    {
-                        orders = OrderService.GetOrdersDebug(CurrentUserData.Token).Orders;
-                    });
+                    //var orderTask = Task.Factory.StartNew(() =>
+                    //{
+                    //    orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
+                    //});
                     var workerTask = Task.Factory.StartNew(() =>
                     {
                         workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
@@ -42,7 +41,9 @@ namespace carwash
                     {
                         clients = ClientService.GetClients(CurrentUserData.Token).Clients;
                     });
-                    Task.WaitAll(orderTask, workerTask, clientsTask);
+                    //Task.WaitAll(orderTask, workerTask, clientsTask);
+                    Task.WaitAll(workerTask, clientsTask);
+                    orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
                     if (clients == null)
                     {
                         throw new Exception();
@@ -56,7 +57,7 @@ namespace carwash
             }
             if (CurrentUserData.Id == -1 || CurrentUserData.Token == "")
             {
-                System.Diagnostics.Debug.WriteLine("@Token is empty or Id is -1");               
+                System.Diagnostics.Debug.WriteLine("@Token is empty or Id is -1");
             }
         }
         public void AuthorizationClicked(object sender, EventArgs e)
@@ -81,10 +82,10 @@ namespace carwash
                                 var clients = new List<Client>();
                                 var workers = new List<Worker>();
                                 System.Diagnostics.Debug.WriteLine("@AUTH ordersTask is start");
-                                var orderTask = Task.Factory.StartNew(() =>
-                                {
-                                    orders = OrderService.GetOrdersDebug(CurrentUserData.Token).Orders;
-                                });
+                                //var orderTask = Task.Factory.StartNew(() =>
+                                //{
+                                //    orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
+                                //});
                                 var workerTask = Task.Factory.StartNew(() =>
                                 {
                                     workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
@@ -93,14 +94,16 @@ namespace carwash
                                 {
                                     clients = ClientService.GetClients(CurrentUserData.Token).Clients;
                                 });
-                                Task.WaitAll(orderTask, workerTask, clientsTask);
+                                //Task.WaitAll(orderTask, workerTask, clientsTask);
+                                Task.WaitAll(workerTask, clientsTask);
+                                orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
                                 if (clients == null)
                                 {
                                     throw new Exception();
                                 }
                                 DBService.DBFilling(orders, workers, clients);
                                 ClearFields();
-                                Navigation.PushModalAsync(new TabbedMainPage());                               
+                                Navigation.PushModalAsync(new TabbedMainPage());
                             }
                             else
                                 DisplayAlert("Ошибка получения данных", $"{currentUserAnswer.Status}", "ОK");

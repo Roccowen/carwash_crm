@@ -1,14 +1,10 @@
-﻿using carwash.Models;
+﻿using carwash.Data;
+using carwash.Models;
+using carwash.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using carwash.Services;
-using carwash.Data;
 
 namespace carwash.Pages
 {
@@ -19,7 +15,7 @@ namespace carwash.Pages
         public List<Worker> Workers { get; set; }
         private OrdersPage ordersPageParent { get; set; }
         private DateTime pickedDateTime { get; set; }
-        public OrderRegistrationPage(OrdersPage ordersPage, DateTime? _pickedDateTime=null)
+        public OrderRegistrationPage(OrdersPage ordersPage, DateTime? _pickedDateTime = null)
         {
             InitializeComponent();
             ordersPageParent = ordersPage;
@@ -47,12 +43,12 @@ namespace carwash.Pages
                             switch (order.Status)
                             {
                                 case System.Net.HttpStatusCode.Created:
-                                    DBService.FindOrAddOrder(order.Order);
+                                    DBService.AddOrRewriteOrder(order.Order);
                                     ordersPageParent.ordersInfo.Add(new OrderInfo(order.Order, client, worker));
                                     await Navigation.PopModalAsync();
                                     break;
                                 case System.Net.HttpStatusCode.OK:
-                                    DBService.FindOrAddOrder(order.Order);
+                                    DBService.AddOrRewriteOrder(order.Order);
                                     ordersPageParent.ordersInfo.Add(new OrderInfo(order.Order, client, worker));
                                     await Navigation.PopModalAsync();
                                     break;
