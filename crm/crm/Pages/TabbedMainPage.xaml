@@ -7,6 +7,7 @@
             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
                        android:TabbedPage.ToolbarPlacement="Bottom"
             NavigationPage.HasNavigationBar="False" 
+            NavigationPage.HasBackButton="False"
             mc:Ignorable="d"
             x:Class="crm.Pages.TabbedMainPage">
     <crmpages:OrdersPage IconImageSource="orders.png"></crmpages:OrdersPage>

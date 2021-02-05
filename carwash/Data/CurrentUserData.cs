@@ -1,5 +1,7 @@
 ﻿using carwash.Models;
 using System;
+using Xamarin.Essentials;
+using System.Collections.ObjectModel;
 
 namespace carwash.Data
 {
@@ -8,19 +10,35 @@ namespace carwash.Data
         public static string Token
         {
             get
-            {
-                object token = "";
-                if (App.Current.Properties.TryGetValue("CurrentUserToken", out token))
-                    return (string)token;
-                else
+            {                
+                try
                 {
-                    App.Current.Properties.Add("CurrentUserToken", (string)token);
-                    return (string)token;
+                    return SecureStorage.GetAsync("CurrentUserToken").Result;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"@Error {ex.Message}");
+                    object token = "";
+                    if (App.Current.Properties.TryGetValue("CurrentUserToken", out token))
+                        return (string)token;
+                    else
+                    {
+                        App.Current.Properties.Add("CurrentUserToken", (string)token);
+                        return (string)token;
+                    }
                 }
             }
             set
             {
-                App.Current.Properties["CurrentUserToken"] = value;
+                try
+                {
+                    SecureStorage.SetAsync("CurrentUserToken", value);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"@Error {ex.Message}");
+                    App.Current.Properties["CurrentUserToken"] = value;
+                }               
             }
         }
         public static int Id
@@ -131,15 +149,20 @@ namespace carwash.Data
                 App.Current.Properties["CurrentUserSettings"] = value;
             }
         }
-        public static void ClearData() => App.Current.Properties.Clear();
+        public static void ClearData()
+        {
+            App.Current.Properties.Clear();
+            SecureStorage.RemoveAll();
+        }
         public static void NewUserData(User user)
         {
-            CurrentUserData.Id = user.Id;
-            CurrentUserData.MainUserId = user.MainUserId;
             CurrentUserData.Name = user.Name;
+            CurrentUserData.Id = user.Id;
+            CurrentUserData.MainUserId = user.MainUserId;            
             CurrentUserData.Phone = user.Phone;
             CurrentUserData.Settings = user.Settings;
             CurrentUserData.Email = user.Email;
         }
+
     }
 }

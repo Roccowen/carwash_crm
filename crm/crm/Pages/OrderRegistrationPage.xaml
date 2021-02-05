@@ -19,7 +19,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="50" />
+                <RowDefinition Height="20" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
@@ -27,17 +27,11 @@
                 <RowDefinition Height="50" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Picker Title="Выберете клиента"
-                    ItemDisplayBinding="{Binding Name}"
-                    ItemsSource="{Binding Clients}"
-                    SelectedItem="{Binding CurrentClient}"
-                    x:Name="ClientPicker"
-                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
-            <Picker Title="Выберете рабочего"
-                    x:Name="WorkerPicker"
-                    ItemDisplayBinding="{Binding Name}"
-                    ItemsSource="{Binding Workers}"
-                    SelectedItem="{Binding CurrentWorker}"
+            <Label Text="Выберите клиента:"
+                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Button x:Name="ClientPickerButton"                  
+                    Text="{Binding CurrentClient.Name, Mode=TwoWay}" 
+                    Clicked="ClientPickerButton_Clicked"
                     Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"/>
             <Entry Placeholder="Введите цену"                  
                    x:Name="PricePlaceholder"

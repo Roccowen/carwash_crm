@@ -5,15 +5,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="crm.Pages.СlientsPage">
+    <ContentPage.Resources>
+        <StyleSheet Source = "/styles.css"/>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
             <SearchBar x:Name="ClientsSearchBar"
                        TextChanged="ClientsSearchBar_TextChanged"
                        SearchButtonPressed="ClientsSearchBar_SearchButtonPressed"
-                       />
+                       Placeholder="Поиск клиентов..."/>
             <ListView x:Name="ClientsListView"
                       ItemsSource="{Binding Clients}"
-                      HasUnevenRows="True"/>
+                      HasUnevenRows="True"
+                      SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding Name}" />
+                                <Label Text="{Binding Phone, StringFormat='+7{0}'}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

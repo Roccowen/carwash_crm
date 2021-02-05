@@ -53,73 +53,10 @@ namespace carwash.Services
                 throw;
             }
         }
-        public static async Task DBFillingAsync(List<Order> orders, List<Worker> workers, List<Client> clients)
-        {
-            var context = new DBContext();
-            var clientsTask = context.Clients.AddRangeAsync(clients);
-            var workersTask = context.Workers.AddRangeAsync(workers);
-            await clientsTask;
-            await workersTask;
-            System.Diagnostics.Debug.WriteLine("@DBFilling clients and workers is added");
-            context.SaveChanges();
-            var ordersTaks = new Task(async () =>
-            {
-                foreach (var order in orders)
-                {
-                    var orderTask = context.Orders.FindAsync(order.Id);
-                    var clientTask = context.Clients.FindAsync(order.ClientId);
-                    var workerTask = context.Workers.FindAsync(order.WorkerId);
-                    var _order = await orderTask;
-                    var client = await clientTask;
-                    var worker = await workerTask;
-                    if (_order == null && client != null && worker != null)
-                    {
-                        order.Client = client;
-                        order.Worker = worker;
-                        context.Orders.Add(_order);
-                        System.Diagnostics.Debug.WriteLine($"@DBFilling order is added {order.Id}");
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine($"@DBFilling order is not added OrderId-{order.Id} WorkerId-{worker.Id} ClientId-{client.Id}");
-                    }
-                }
-            });
-            context.SaveChanges();
-        }
         public static Worker GetWorker(int id)
         {
             var context = new DBContext();
             return context.Workers.Find(id);
-        }
-        public static async Task<Worker> GetWorkerAsync(int id)
-        {
-            var context = new DBContext();
-            var workerTask = context.Workers.FindAsync(id);
-            return await workerTask;
-        }
-        public static Client GetClient(int id)
-        {
-            var context = new DBContext();
-            return context.Clients.Find(id);
-        }
-        public static async Task<Client> GetClientAsync(int id)
-        {
-            var context = new DBContext();
-            var clientTask = context.Clients.FindAsync(id);
-            return await clientTask;
-        }
-        public static async Task AddWorkerAsync(Worker worker)
-        {
-            var context = new DBContext();
-            await context.Workers.AddAsync(worker);
-            context.SaveChanges();
-        }
-        public static async Task AddClientAsync(Client client)
-        {
-            var context = new DBContext();
-            await context.Clients.AddAsync(client);
-            context.SaveChanges();
         }
         public static void AddWorker(Worker worker)
         {
@@ -136,19 +73,24 @@ namespace carwash.Services
                 throw;
             }
         }
-        public static void AddClient(Client client)
+        public static void AddOrRewriteClient(Client client)
         {
-            var context = new DBContext();
-            context.Clients.Add(client);
-            try
+            DBContext context = new DBContext();
+            var c = context.Clients.Find(client.Id);
+            if (c is null)
             {
+                context.Clients.Add(client);
+                System.Diagnostics.Debug.WriteLine($"@Added new client {client.Id}-{client.Name}");
                 context.SaveChanges();
             }
-            catch (Exception e)
+            else
             {
-                System.Diagnostics.Debug.Fail(e.Message);
-                System.Diagnostics.Debug.Fail(e.InnerException.Message);
-                throw;
+                c.Phone = client.Phone;
+                c.CarInformation = client.CarInformation;
+                c.Name = client.Name;
+                
+                System.Diagnostics.Debug.WriteLine($"@Not added new client {client.Id}-{client.Name}");
+                context.SaveChanges();
             }
         }
         public static void AddOrRewriteWorker(Worker worker)
@@ -168,24 +110,6 @@ namespace carwash.Services
                 context.SaveChanges();
             }
 
-        }
-        public static void AddOrRewriteClient(Client client)
-        {
-            DBContext context = new DBContext();
-            var c = context.Clients.Find(client.Id);
-            if (c is null)
-            {
-                context.Clients.Add(client);
-                System.Diagnostics.Debug.WriteLine($"@Added new client {client.Id}-{client.Name}");
-                context.SaveChanges();
-            }
-            else
-            {
-                c.Phone = client.Phone;
-                c.CarInformation = client.CarInformation;
-                c.Name = client.Name;
-                System.Diagnostics.Debug.WriteLine($"@Not added new client {client.Id}-{client.Name}");
-            }
         }
         public static void AddOrRewriteOrder(Order order)
         {
@@ -228,6 +152,12 @@ namespace carwash.Services
             }
             else
                 System.Diagnostics.Debug.WriteLine($"@FindOrAddOrder(Order order) can't find client {order.ClientId}  skip order-{order.Id}");
+        }
+        public static Order GetOrderById(int id)
+        {
+            DBContext context = new DBContext();
+            var order = context.Orders.Find(id);
+            return order;
         }
         public static List<Worker> GetWorkers()
         {

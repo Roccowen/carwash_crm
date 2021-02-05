@@ -31,15 +31,15 @@ namespace crm.Pages
             {               
                 DBService.DropData();
                 CurrentUserData.ClearData();
-                AppData.ClientsCount = 0; //only debug
-                AppData.OrdersCount = 0;
-                AppData.WorkersCount = 0;
+                ApplicationData.ClientsCount = 0; //only debug
+                ApplicationData.OrdersCount = 0;
+                ApplicationData.WorkersCount = 0;
                 await Navigation.PopModalAsync();
             }
         }
         private async void AddNewClietnButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new ClientRegistrationPage());
+            await Navigation.PushModalAsync(new ClientRegistrationPage(null));
         }
     }
 }

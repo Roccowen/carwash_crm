@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="crm.Pages.SearchOrCreatePage">
+    <ContentPage.Resources>
+        <StyleSheet Source = "/styles.css"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ListView
+                x:Name="ClientsList"
+                ItemsSource="{Binding ClientsCollect}"
+                HasUnevenRows="True"
+                SelectionMode="None"
+                IsPullToRefreshEnabled="False"
+                VerticalScrollBarVisibility="Always"
+                ItemTapped="ClientsList_ItemTapped"
+                Grid.Row="0" Grid.ColumnSpan="2">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding Name}" />
+                                <Label Text="{Binding Phone, StringFormat='+7{0}'}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Entry Placeholder="Поиск по клиентам"
+                   x:Name="ClientFoundEntry"
+                   TextChanged="ClientFoundEntry_TextChanged"
+                   Grid.Row="1"  Grid.ColumnSpan="2"/>
+            <Button Text="Назад" 
+                    x:Name="BackButton"
+                    Clicked="BackButton_Clicked"
+                    Grid.Row="2" Grid.Column="1"/>
+            <Button Text="Добавить клиента"
+                    x:Name="AddClientButton"
+                    Clicked="AddClientButton_Clicked"
+                    Grid.Row="2" Grid.Column="0"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

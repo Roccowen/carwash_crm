@@ -12,6 +12,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Diagnostics;
 using System.Threading;
+using Plugin.Messaging;
 
 namespace crm.Pages
 {
@@ -63,16 +64,23 @@ namespace crm.Pages
         {
             if ((e.Item as OrderInfo).IsEmpty)
             {
-                await Navigation.PushModalAsync(new OrderRegistrationPage(this, (e.Item as OrderInfo), OrdersDataPicker.Date));
+                await Navigation.PushModalAsync(new OrderRegistrationPage((e.Item as OrderInfo), OrdersDataPicker.Date));
                 this.BindingContext = this;
             }
             else
             {
-                var action = await DisplayActionSheet("Действия", "Отмена", null, "Редактировать", "Отменить");
+                var action = await DisplayActionSheet("Действия", "Отмена", null, "Редактировать", "Позвонить", "Отменить");
                 switch (action)
                 {
                     case ("Редактировать"):
-                        await Navigation.PushModalAsync(new OrderRegistrationPage(this, (e.Item as OrderInfo), OrdersDataPicker.Date));
+                        await Navigation.PushModalAsync(new OrderRegistrationPage((e.Item as OrderInfo), OrdersDataPicker.Date));
+                        break;
+                    case ("Позвонить"):
+                        var phoneDialer = CrossMessaging.Current.PhoneDialer;
+                        if (phoneDialer.CanMakePhoneCall)
+                        {
+                            phoneDialer.MakePhoneCall("+7" + (e.Item as OrderInfo).ClientPhone);
+                        }
                         break;
                     case ("Отменить"):
                         bool result = await DisplayAlert("Подтвердить действие", "Вы действительно хотите отменить запись?", "Да", "Нет");

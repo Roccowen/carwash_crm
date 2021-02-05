@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:beh="clr-namespace:carwash.Behaviors;assembly=carwash"
+             xmlns:behaviorPack="clr-namespace:Xamarin.Forms.BehaviorValidationPack;assembly=Xamarin.Forms.BehaviorValidationPack"
              mc:Ignorable="d"
              x:Class="crm.Pages.ClientRegistrationPage">
     <ContentPage.Resources>
@@ -16,34 +17,34 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
-                <RowDefinition Height="50" />
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Entry Placeholder="Введите имя"                  
                    x:Name="NamePlaceholder"
                    MaxLength="40"
                    TextChanged="NamePlaceholder_TextChanged"
                    Keyboard="Text"
-                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                 <Entry.Behaviors>
                     <beh:EntryTextValidator/>
                 </Entry.Behaviors>
             </Entry>
-            <Entry Placeholder="Введите телефон"                  
+            <Entry Text="+7" 
+                   Placeholder="Введите телефон"                  
                    x:Name="PhonePlaceholder"
                    MaxLength="17"
                    TextChanged="NamePlaceholder_TextChanged"
                    Keyboard="Telephone"
-                   Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
                 <Entry.Behaviors>
+                    <!--<behaviorPack:MaskedBehavior Mask="+7(XXX)XXX-XX-XX" />-->
                     <beh:EntryPhoneMask Mask="+7(XXX)XXX-XX-XX"/>
                 </Entry.Behaviors>
             </Entry>
-            <Picker Title="Выберете автомобиль"
-                    x:Name="CarPicker"
-                    Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"/>
             <Button Text="Добавить"
                     x:Name="AddNewClient"
                     Clicked="AddNewClient_Clicked"

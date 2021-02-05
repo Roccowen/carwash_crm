@@ -37,15 +37,12 @@ namespace carwash.Services
             else
                 return NewOrderDebug(reserveDate, clientId, workerId, price, token, type, status);
         }
-        public static (HttpStatusCode Status, Order Order) GetOrderById(string orderId, string token)
+        public static (HttpStatusCode Status, Order Order) GetOrderById(int orderId, string token)
         {
-            var request = new RestRequest($@"/api/order/{orderId}", Method.GET)
-                .AddHeader("Authorization", $"{AppData.TokenType} {token}");
-            var response = AppData.AppRestClient.Execute(request);
-            if (response.IsSuccessful)
-                return (response.StatusCode, JsonConvert.DeserializeObject<Order>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" }));
+            if (_public)
+                return GetOrderByIdPublic(orderId, token);
             else
-                return (response.StatusCode, null);
+                return GetOrderByIdDebug(orderId, token);        
         }
         private static (HttpStatusCode Status, List<Order> Orders) GetOrdersPublic(string token)
         {
@@ -154,6 +151,23 @@ namespace carwash.Services
         {
             return (HttpStatusCode.OK, "good");
         }
+        private static (HttpStatusCode Status, Order order) GetOrderByIdPublic(int orderId, string token)
+        {
+            var request = new RestRequest($@"/api/order/{orderId}", Method.GET)
+                .AddHeader("Authorization", $"{AppData.TokenType} {token}");
+            var response = AppData.AppRestClient.Execute(request);
+            if (response.IsSuccessful)
+                return (response.StatusCode, JsonConvert.DeserializeObject<Order>(response.Content, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" }));
+            else
+                return (response.StatusCode, null);
+        }
+        private static (HttpStatusCode Status, Order order) GetOrderByIdDebug(int orderId, string token)
+        {
+            if (orderId > OrdersCntGet())
+                return (HttpStatusCode.OK, DBService.GetOrderById(orderId));
+            else
+                return (HttpStatusCode.InternalServerError, null);
+        }
         public static async Task<(HttpStatusCode Status, List<Order> Orders)> GetOrdersAsync(string token)
         {
             var request = new RestRequest(@"/api/order", Method.GET)
@@ -224,7 +238,35 @@ namespace carwash.Services
             else
                 return (response.StatusCode, null);
         }
-        private static (HttpStatusCode Status, Order Order) ChangeOrderNW(string orderId, string token, DateTime newReserveDateString, int newClientId, int newWorkerId, int newPrice, string newType, string newStatus)
+        public static (HttpStatusCode Status, Order Order) ChangeOrder(int orderId, string token, DateTime newReserveDateString, int newClientId, int newWorkerId, int newPrice, string newType, string newStatus)
+        {
+            if (_public)
+                return ChangeOrderPublic(orderId, token, newReserveDateString, newClientId, newWorkerId, newPrice, newType, newStatus);
+            else
+                return ChangeOrderDebug(orderId, token, newReserveDateString, newClientId, newWorkerId, newPrice, newType, newStatus);
+        }
+        public static (HttpStatusCode Status, Order Order) ChangeOrder(Order order, string token)
+        {
+            if (_public)
+                return ChangeOrderPublic(order.Id, token, order.DateOfReservation, order.ClientId, order.WorkerId, order.Price, order.Type, order.Status);
+            else
+                return ChangeOrderDebug(order.Id, token, order.DateOfReservation, order.ClientId, order.WorkerId, order.Price, order.Type, order.Status);
+        }
+        private static (HttpStatusCode Status, Order Order) ChangeOrderDebug(int orderId, string token, DateTime newReserveDateString, int newClientId, int newWorkerId, int newPrice, string newType, string newStatus)
+        {
+            return (HttpStatusCode.OK, new Order
+            {
+                Id = orderId,
+                UserId = 0,
+                ClientId = newClientId,
+                WorkerId = newWorkerId,
+                DateOfReservation = newReserveDateString,
+                Price = newPrice,
+                Type = newType,
+                Status = newStatus
+            });
+        }
+        private static (HttpStatusCode Status, Order Order) ChangeOrderPublic(int orderId, string token, DateTime newReserveDateString, int newClientId, int newWorkerId, int newPrice, string newType, string newStatus)
         {
             var request = new RestRequest($@"/api/client/{orderId}", Method.PUT)
                 .AddHeader("Authorization", $"{AppData.TokenType} {token}")

@@ -11,7 +11,19 @@ namespace carwash
             Timeout = -1
         };
         public static int WorkersCount = 0;
-        public static int ClientsCount = 0;
+        private static int _clientsCount = 0;
+        public static int ClientsCount
+        {
+            get 
+            { 
+                return _clientsCount; 
+            } 
+            set
+            {
+                System.Diagnostics.Debug.WriteLine($"ClientsCount - {_clientsCount}");
+                _clientsCount = value;
+            }
+        }
         public static int OrdersCount = 0;
         public static string TokenType = "Bearer";
         public static bool ClientServicePublic = false;

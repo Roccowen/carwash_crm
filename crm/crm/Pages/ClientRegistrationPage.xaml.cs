@@ -16,9 +16,19 @@ namespace crm.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ClientRegistrationPage : ContentPage
     {
-        public ClientRegistrationPage()
+        private OrderRegistrationPage _parentPage { get; set; } = null;
+        private SearchOrCreatePage _searchOrCreatePage { get; set; } = null;
+        public ClientRegistrationPage(string newclientname, OrderRegistrationPage parentPage = null, SearchOrCreatePage searchOrCreatePage= null)
         {
             InitializeComponent();
+
+            NamePlaceholder.Text = newclientname;
+
+
+            if (parentPage != null)
+                _parentPage = parentPage;
+            if (searchOrCreatePage != null)
+                _searchOrCreatePage = searchOrCreatePage;
         }
         private async void BackButton_Clicked(object sender, EventArgs e)
         {
@@ -34,12 +44,20 @@ namespace crm.Pages
                     switch (client.Status)
                     {
                         case System.Net.HttpStatusCode.OK:
-                            DBService.AddClient(client.Client);
+                            if (_parentPage != null)
+                                _parentPage.CurrentClient = client.Client;
+                            DBService.AddOrRewriteClient(client.Client);
                             await Navigation.PopModalAsync();
-                            break;
+                            if (_searchOrCreatePage != null)
+                                _searchOrCreatePage.ClosePage();
+                                break;
                         case System.Net.HttpStatusCode.Created:
-                            DBService.AddClient(client.Client);
+                            if (_parentPage != null)
+                                _parentPage.CurrentClient = client.Client;
+                            DBService.AddOrRewriteClient(client.Client);
                             await Navigation.PopModalAsync();
+                            if (_searchOrCreatePage != null)
+                                _searchOrCreatePage.ClosePage();
                             break;
                         default:
                             await DisplayAlert("Ошибка авторизации", $"{client.Status}", "ОK");

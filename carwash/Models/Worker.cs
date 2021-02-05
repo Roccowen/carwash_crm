@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using carwash.Interfaces;
 
 namespace carwash.Models
 {
-    public class Worker
+    public class Worker : IPerson
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }

@@ -26,6 +26,7 @@
                    class="Title"
                    Grid.Column="0" Grid.Row="0"  Grid.ColumnSpan="2" />
             <Entry Placeholder="Введите номер телефона"
+                   Text="+7" 
                    Keyboard="Telephone"
                    x:Name="NumberPlaceholder" 
                    MaxLength="17"

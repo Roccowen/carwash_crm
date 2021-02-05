@@ -11,8 +11,6 @@ namespace carwash.Services
 {
     public static class ClientService
     {
-        private static readonly bool _public = AppData.ClientServicePublic;
-        private static int ClientCntInc(int i = 1) => AppData.ClientsCount += i;
         public static async Task<(HttpStatusCode Status, List<Client> Clients)> GetClientsAsync(string token)
         {
             var request = new RestRequest(@"/api/client", Method.GET)
@@ -76,6 +74,7 @@ namespace carwash.Services
             else
                 return GetClientsDebug();
         }
+        
         private static (HttpStatusCode Status, Client Client) NewClientPublic(string name, string phone, string carInformation, string token)
         {
             var request = new RestRequest(@"/api/client", Method.POST)
@@ -170,7 +169,7 @@ namespace carwash.Services
                     Id = ClientCntInc(),
                     Name = _names[_random.Next(0, 40)],
                     CarInformation = "{\"car\":\"auto\"}",
-                    Phone = "",
+                    Phone = "7775461536",
                     UserId = 0
                 });
             }
@@ -204,5 +203,7 @@ namespace carwash.Services
             "Елизавета Павловна Пугачева", "Степан Егорович Рожков", "Ксения Ильинична Сидорова", "Василиса Александровна Смирнова", "София Артёмовна Соколова", "Алиса Максимовна Соколова",
             "Семён Макарович Фадеев", "Александра Максимовна Федорова", "Диана Артёмовна Федорова", "Мария Серафимовна Фокина" };
         private static Random _random = new Random();
+        private static int ClientCntInc(int i = 1) => AppData.ClientsCount += i;
+        private static readonly bool _public = AppData.ClientServicePublic;
     }
 }

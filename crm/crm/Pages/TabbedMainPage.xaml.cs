@@ -22,5 +22,10 @@ namespace crm.Pages
         {
             InitializeComponent();           
         }
+        protected override bool OnBackButtonPressed()
+        {
+            // Do your magic here
+            return false;
+        }
     }
 }

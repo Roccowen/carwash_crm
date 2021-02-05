@@ -10,9 +10,6 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <Button Text="Добавить нового сотрудника"
-                    x:Name="AddNewEmploeeButton"
-                    Clicked="AddNewEmploeeButton_Clicked"/>
             <Button Text="Добавить нового клиента"
                     x:Name="AddNewClietnButton"
                     Clicked="AddNewClietnButton_Clicked"/>

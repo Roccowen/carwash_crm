@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using carwash.Interfaces;
 
 namespace carwash.Models
 {
-    public class Client
+    public class Client : IPerson
     {
         [Key]
         [JsonPropertyName("id")]
