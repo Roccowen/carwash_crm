@@ -12,7 +12,7 @@ namespace carwash.Pages
         public MainPage()
         {
             InitializeComponent();
-            currentUserGreeting = $"Добро пожаловать, {CurrentUserData.Name}!";
+            currentUserGreeting = $"Добро пожаловать, {UserData.Name}!";
             this.BindingContext = this;
         }
     }

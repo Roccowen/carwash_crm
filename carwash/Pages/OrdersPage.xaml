@@ -48,12 +48,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label Text="Заказов на указанную дату нет"
-                   x:Name="OrdersIsNullLabel"
-                   VerticalOptions="CenterAndExpand" 
-                   HorizontalOptions="CenterAndExpand"
-                   IsVisible="False"
-                   Grid.Column="0" Grid.Row="0"/>
             <DatePicker x:Name="OrdersDataPicker"
                         Unfocused="OrdersDataPicker_Unfocused"
                         Focused="OrdersDataPicker_Focused"

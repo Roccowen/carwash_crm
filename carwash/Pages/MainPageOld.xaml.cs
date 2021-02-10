@@ -18,13 +18,13 @@ namespace carwash
         {
             InitializeComponent();
 
-            if (CurrentUserData.Token != "")
+            if (UserData.Token != "")
             {
                 System.Diagnostics.Debug.WriteLine("@MP Token is not empty");
-                var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
+                var currentUserAnswer = UserService.GetCurrentUser(UserData.Token);
                 if (currentUserAnswer.Status == HttpStatusCode.OK)
                 {
-                    CurrentUserData.NewUserData(currentUserAnswer.User);
+                    UserData.NewUserData(currentUserAnswer.User);
                     System.Diagnostics.Debug.WriteLine("@MP threading start");
                     var orders = new List<Order>();
                     var clients = new List<Client>();
@@ -32,18 +32,18 @@ namespace carwash
                     System.Diagnostics.Debug.WriteLine("@MP ordersTask is start");
                     Task.Factory.StartNew(() =>
                     {
-                        orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
-                        workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
-                        clients = ClientService.GetClients(CurrentUserData.Token).Clients;
+                        orders = OrderService.GetOrders(UserData.Token).Orders;
+                        workers = WorkerService.GetWorkers(UserData.Token).Workers;
+                        clients = ClientService.GetClients(UserData.Token).Clients;
                     }).ContinueWith(task =>
                     {
                         DBService.DBFilling(orders, workers, clients);
                     }, TaskScheduler.FromCurrentSynchronizationContext());
                 }
                 else
-                    CurrentUserData.Id = -1;
+                    UserData.Id = -1;
             }
-            if (CurrentUserData.Id == -1 || CurrentUserData.Token == "")
+            if (UserData.Id == -1 || UserData.Token == "")
             {
                 System.Diagnostics.Debug.WriteLine("@Token is not empty or Id is -1");
                 Navigation.PushModalAsync(new AuthorizationPage());

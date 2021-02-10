@@ -34,12 +34,12 @@ namespace carwash.Pages
                 {
                     if (int.TryParse(PricePlaceholder.Text, out price) && price > 0)
                     {
-                        if (CurrentUserData.Token != "")
+                        if (UserData.Token != "")
                         {
                             var reservationDateTime = ReservationDataPicker.Date.Add(ReservationTimePicker.Time);
                             var client = (Client)ClientPicker.SelectedItem;
                             var worker = (Worker)WorkerPicker.SelectedItem;
-                            var order = OrderService.NewOrder(reservationDateTime, client.Id, worker.Id, price, CurrentUserData.Token);
+                            var order = OrderService.NewOrder(reservationDateTime, client.Id, worker.Id, price, UserData.Token);
                             switch (order.Status)
                             {
                                 case System.Net.HttpStatusCode.Created:

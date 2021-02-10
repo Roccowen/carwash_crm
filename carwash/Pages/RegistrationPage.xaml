@@ -31,7 +31,7 @@
                    TextChanged="NamePlaceholder_TextChanged"
                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                 <Entry.Behaviors>
-                    <beh:EntryTextValidator/>
+                    <beh:EntryNameValidator/>
                 </Entry.Behaviors>
             </Entry>
             <Entry Placeholder="Введите номер телефона"

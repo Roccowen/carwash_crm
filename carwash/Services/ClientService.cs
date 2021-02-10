@@ -53,7 +53,7 @@ namespace carwash.Services
             else
                 return NewClientDebug(name, phone, carInformation, token);
         }
-        public static (HttpStatusCode Status, string Message) DelClient(string clientId, string token)
+        public static (HttpStatusCode Status, string Message) DelClient(int clientId, string token)
         {
             if (_public)
                 return DelClientPublic(clientId, token);
@@ -66,6 +66,13 @@ namespace carwash.Services
                 return ChangeClientDataPublic(clientId, token, newName, newPhone, newCarInformation);
             else
                 return ChangeClientDataDebug(clientId, token, newName, newPhone, newCarInformation);
+        }
+        public static (HttpStatusCode Status, Client NewClient) ChangeClientData(Client client, string token)
+        {
+            if (_public)
+                return ChangeClientDataPublic(client.Id, token, client.Name, client.Phone, client.CarInformation);
+            else
+                return ChangeClientDataDebug(client.Id, token, client.Name, client.Phone, client.CarInformation);
         }
         public static (HttpStatusCode Status, List<Client> Clients) GetClients(string token)
         {
@@ -103,7 +110,7 @@ namespace carwash.Services
                 Id = ClientCntInc()
             });
         }
-        private static (HttpStatusCode Status, string Message) DelClientPublic(string clientId, string token)
+        private static (HttpStatusCode Status, string Message) DelClientPublic(int clientId, string token)
         {
             var request = new RestRequest($@"/api/client/{clientId}", Method.DELETE)
                                 .AddHeader("Authorization", $"{AppData.TokenType} {token}");
@@ -116,7 +123,7 @@ namespace carwash.Services
             else
                 return (response.StatusCode, "");
         }
-        private static (HttpStatusCode Status, string Message) DelClientDebug(string clientId, string token)
+        private static (HttpStatusCode Status, string Message) DelClientDebug(int clientId, string token)
         {
             return (HttpStatusCode.OK, "good");
         }
@@ -162,14 +169,14 @@ namespace carwash.Services
         private static (HttpStatusCode Status, List<Client> Clients) GetClientsDebug()
         {
             var Clients = new List<Client>();
-            for (int i = 0; i < _random.Next(2, 40); i++)
+            for (int i = 1; i <= 20; i++)
             {
                 Clients.Add(new Client()
                 {
-                    Id = ClientCntInc(),
-                    Name = _names[_random.Next(0, 40)],
+                    Id = i,
+                    Name = _names[i],
                     CarInformation = "{\"car\":\"auto\"}",
-                    Phone = "7775461536",
+                    Phone = $"7{_random.Next(55, 99)}{_random.Next(1111111, 9999999)}",
                     UserId = 0
                 });
             }
@@ -195,13 +202,13 @@ namespace carwash.Services
             public string Message { get; set; }
         }
         private static readonly string[] _names = {
-            "Анна Артемьевна Абрамова", "Никита Даниилович Аксенов", "Марк Петрович Андрианов", "Леонид Святославович Белов", "Пётр Филиппович Гаврилов", "Никита Тимофеевич Гончаров",
-            "Ника Богдановна Гришина", "Мирослава Глебовна Гусева", "Александр Вадимович Егоров", "Иван Никитич Емельянов", "Мария Ивановна Ермакова", "Виктория Егоровна Жукова",
-            "Григорий Викторович Иванов", "Алексей Романович Иванов", "София Алексеевна Казакова", "Егор Владимирович Королев", "Ева Ивановна Кузьмина", "Матвей Германович Лаптев",
-            "Артём Тимурович Лыков", "София Максимовна Максимова", "Роман Иванович Масленников", "Андрей Степанович Митрофанов", "Варвара Константиновна Михайлова", "Мирон Константинович Морозов",
-            "Варвара Викторовна Никитина", "Илья Дмитриевич Олейников", "Адам Артёмович Павлов", "Григорий Андреевич Платонов", "Ника Андреевна Попова", "Дарья Ивановна Попова",
-            "Елизавета Павловна Пугачева", "Степан Егорович Рожков", "Ксения Ильинична Сидорова", "Василиса Александровна Смирнова", "София Артёмовна Соколова", "Алиса Максимовна Соколова",
-            "Семён Макарович Фадеев", "Александра Максимовна Федорова", "Диана Артёмовна Федорова", "Мария Серафимовна Фокина" };
+            "Анна Артемьевна", "Никита Даниилович", "Марк Петрович", "Леонид Святославович", "Пётр Филиппович", "Никита Тимофеевич",
+            "Ника Богдановна", "Мирослава Глебовна", "Александр Вадимович", "Иван Никитич", "Мария Ивановна", "Виктория Егоровна",
+            "Григорий Викторович", "Алексей Романович", "София Алексеевна", "Егор Владимирович", "Ева Ивановна", "Матвей Германович",
+            "Артём Тимурович", "София Максимовна", "Роман Иванович", "Андрей Степанович", "Варвара Константиновна", "Мирон Константинович",
+            "Варвара Викторовна", "Илья Дмитриевич", "Адам Артёмович", "Григорий Андреевич", "Ника Андреевна", "Дарья Ивановна",
+            "Елизавета Павловна", "Степан Егорович", "Ксения Ильинична", "Василиса Александровна", "София Артёмовна", "Алиса Максимовна",
+            "Семён Макарович", "Александра Максимовна", "Диана Артёмовна", "Мария Серафимовна" };
         private static Random _random = new Random();
         private static int ClientCntInc(int i = 1) => AppData.ClientsCount += i;
         private static readonly bool _public = AppData.ClientServicePublic;

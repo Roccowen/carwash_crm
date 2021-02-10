@@ -16,9 +16,9 @@ using carwash.Services;
 namespace crm.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]   
-    public partial class RegistrationPage : ContentPage
+    public partial class UserRegistrationPage : ContentPage
     {
-        public RegistrationPage()
+        public UserRegistrationPage()
         {
             InitializeComponent();
         }

@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:beh="clr-namespace:carwash.Behaviors;assembly=carwash"
              mc:Ignorable="d"
-             x:Class="crm.Pages.RegistrationPage"
+             x:Class="crm.Pages.UserRegistrationPage"
              Title="Регистрация">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
@@ -31,7 +31,7 @@
                    TextChanged="NamePlaceholder_TextChanged"
                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                 <Entry.Behaviors>
-                    <beh:EntryTextValidator/>
+                    <beh:EntryNameValidator/>
                 </Entry.Behaviors>
             </Entry>
             <Entry Placeholder="Введите номер телефона"

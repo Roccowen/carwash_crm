@@ -4,7 +4,6 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:extforms="clr-namespace:carwash.Controls"
              xmlns:beh="clr-namespace:carwash.Behaviors"
              mc:Ignorable="d"
              Title="Новый заказ"

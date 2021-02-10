@@ -23,7 +23,7 @@ namespace carwash.Pages
             {
                 if (NamePlaceholder.Text != null && ValidService.nameCheck.IsMatch(NamePlaceholder.Text))
                 {
-                    var client = ClientService.NewClient(NamePlaceholder.Text, ValidService.ClearPhone(PhonePlaceholder.Text), "{car:auto}", CurrentUserData.Token);
+                    var client = ClientService.NewClient(NamePlaceholder.Text, ValidService.ClearPhone(PhonePlaceholder.Text), "{car:auto}", UserData.Token);
                     switch (client.Status)
                     {
                         case System.Net.HttpStatusCode.OK:

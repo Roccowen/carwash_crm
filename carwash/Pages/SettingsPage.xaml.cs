@@ -42,7 +42,7 @@ namespace carwash.Pages
             if (result)
             {
                 DBService.DropData();
-                CurrentUserData.ClearData();
+                UserData.ClearData();
                 AppData.ClientsCount = 0; //only debug
                 AppData.OrdersCount = 0;
                 AppData.WorkersCount = 0;

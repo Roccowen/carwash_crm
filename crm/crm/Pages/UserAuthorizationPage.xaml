@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:beh="clr-namespace:carwash.Behaviors;assembly=carwash"
              mc:Ignorable="d"
-             x:Class="crm.Pages.AuthorizationPage"
+             x:Class="crm.Pages.UserAuthorizationPage"
              Title="Авторизация">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>

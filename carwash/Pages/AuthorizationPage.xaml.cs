@@ -17,45 +17,42 @@ namespace carwash
         public AuthorizationPage()
         {
             InitializeComponent();
-            if (CurrentUserData.Token != "")
+            if (UserData.Token != "")
             {
                 System.Diagnostics.Debug.WriteLine("@AUTH_INIT Token is not empty");
-                var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
+                var currentUserAnswer = UserService.GetCurrentUser(UserData.Token);
                 if (currentUserAnswer.Status == HttpStatusCode.OK)
                 {
-                    CurrentUserData.NewUserData(currentUserAnswer.User);
+                    UserData.NewUserData(currentUserAnswer.User);
                     System.Diagnostics.Debug.WriteLine("@AUTH_INIT threading start");
+                    
                     var orders = new List<Order>();
                     var clients = new List<Client>();
                     var workers = new List<Worker>();
+                    
                     System.Diagnostics.Debug.WriteLine("@AUTH_INIT ordersTask is start");
-                    //var orderTask = Task.Factory.StartNew(() =>
-                    //{
-                    //    orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
-                    //});
+                    var orderTask = Task.Factory.StartNew(() =>
+                    {
+                        orders = OrderService.GetOrders(UserData.Token).Orders;
+                    });
                     var workerTask = Task.Factory.StartNew(() =>
                     {
-                        workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+                        workers = WorkerService.GetWorkers(UserData.Token).Workers;
                     });
                     var clientsTask = Task.Factory.StartNew(() =>
                     {
-                        clients = ClientService.GetClients(CurrentUserData.Token).Clients;
+                        clients = ClientService.GetClients(UserData.Token).Clients;
                     });
-                    //Task.WaitAll(orderTask, workerTask, clientsTask);
-                    Task.WaitAll(workerTask, clientsTask);
-                    orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
-                    if (clients == null)
-                    {
-                        throw new Exception();
-                    }
+                    Task.WaitAll(orderTask, workerTask, clientsTask);
+                    orders = OrderService.GetOrders(UserData.Token).Orders;
                     DBService.DBFilling(orders, workers, clients);
                     ClearFields();
-                    Navigation.PushModalAsync(new TabbedMainPage());
+                    Navigation.PushModalAsync(new TabbedMainPage(clients, workers));
                 }
                 else
-                    CurrentUserData.Id = -1;
+                    UserData.Id = -1;
             }
-            if (CurrentUserData.Id == -1 || CurrentUserData.Token == "")
+            if (UserData.Id == -1 || UserData.Token == "")
             {
                 System.Diagnostics.Debug.WriteLine("@Token is empty or Id is -1");
             }
@@ -70,40 +67,35 @@ namespace carwash
                     switch (answer.Status)
                     {
                         case System.Net.HttpStatusCode.OK:
-                            CurrentUserData.Token = answer.Token;
-                            var currentUserAnswer = UserService.GetCurrentUser(CurrentUserData.Token);
+                            UserData.Token = answer.Token;
+                            var currentUserAnswer = UserService.GetCurrentUser(UserData.Token);
                             if (currentUserAnswer.Status == HttpStatusCode.OK)
                             {
                                 System.Diagnostics.Debug.WriteLine("@AUTH auth is suc");
-                                CurrentUserData.NewUserData(currentUserAnswer.User);
+                                UserData.NewUserData(currentUserAnswer.User);
 
                                 System.Diagnostics.Debug.WriteLine("@AUTH threading start");
                                 var orders = new List<Order>();
                                 var clients = new List<Client>();
                                 var workers = new List<Worker>();
                                 System.Diagnostics.Debug.WriteLine("@AUTH ordersTask is start");
-                                //var orderTask = Task.Factory.StartNew(() =>
-                                //{
-                                //    orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
-                                //});
+                                var orderTask = Task.Factory.StartNew(() =>
+                                {
+                                    orders = OrderService.GetOrders(UserData.Token).Orders;
+                                });
                                 var workerTask = Task.Factory.StartNew(() =>
                                 {
-                                    workers = WorkerService.GetWorkers(CurrentUserData.Token).Workers;
+                                    workers = WorkerService.GetWorkers(UserData.Token).Workers;
                                 });
                                 var clientsTask = Task.Factory.StartNew(() =>
                                 {
-                                    clients = ClientService.GetClients(CurrentUserData.Token).Clients;
+                                    clients = ClientService.GetClients(UserData.Token).Clients;
                                 });
-                                //Task.WaitAll(orderTask, workerTask, clientsTask);
-                                Task.WaitAll(workerTask, clientsTask);
-                                orders = OrderService.GetOrders(CurrentUserData.Token).Orders;
-                                if (clients == null)
-                                {
-                                    throw new Exception();
-                                }
+                                Task.WaitAll(orderTask, workerTask, clientsTask);
+                                orders = OrderService.GetOrders(UserData.Token).Orders;
                                 DBService.DBFilling(orders, workers, clients);
                                 ClearFields();
-                                Navigation.PushModalAsync(new TabbedMainPage());
+                                Navigation.PushModalAsync(new TabbedMainPage(clients, workers));
                             }
                             else
                                 DisplayAlert("Ошибка получения данных", $"{currentUserAnswer.Status}", "ОK");
@@ -134,8 +126,8 @@ namespace carwash
         }
         private void ClearFields()
         {
-            NumberPlaceholder.Text = "";
-            PasswordPlaceholder.Text = "";
+            NumberPlaceholder.Text = null;
+            PasswordPlaceholder.Text = null;
         }
     }
 }

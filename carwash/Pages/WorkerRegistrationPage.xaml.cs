@@ -18,7 +18,7 @@ namespace carwash.Pages
         {
             if (NamePlaceholder.Text != null && ValidService.nameCheck.IsMatch(NamePlaceholder.Text))
             {
-                var workerAnswer = WorkerService.NewWorker(CurrentUserData.Token, NamePlaceholder.Text);
+                var workerAnswer = WorkerService.NewWorker(UserData.Token, NamePlaceholder.Text);
                 switch (workerAnswer.Status)
                 {
                     case HttpStatusCode.Created:

@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using carwash.Models;
+using carwash.Data;
 using carwash.Services;
 
 using Xamarin.Forms;
@@ -14,18 +15,18 @@ using Xamarin.Forms.Xaml;
 namespace crm.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SearchOrCreatePage : ContentPage
+    public partial class ClientsSearchPage : ContentPage
     {
         public ObservableCollection<Client> ClientsCollect { get; set; }
         private List<Client> allClients { get; set; }
         private OrderRegistrationPage _parentPage { get; set; }
-        public SearchOrCreatePage(OrderRegistrationPage parentPage)
+        public ClientsSearchPage(OrderRegistrationPage parentPage)
         {
             InitializeComponent();
             ClientsCollect = new ObservableCollection<Client>();
 
             _parentPage = parentPage;
-            allClients = DBService.GetClients().OrderBy(c => c.Name).ToList();
+            allClients = DBService.GetClients();
             foreach (var c in allClients)
                 ClientsCollect.Add(c);
 

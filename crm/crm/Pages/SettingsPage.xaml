@@ -13,6 +13,9 @@
             <Button Text="Добавить нового клиента"
                     x:Name="AddNewClietnButton"
                     Clicked="AddNewClietnButton_Clicked"/>
+            <Button Text="Редактирование услуг"
+                    x:Name="ServiceSettingsButton"
+                    Clicked="ServiceSettingsButton_Clicked"/>
             <Button Text="Выйти из аккаунта"
                     x:Name="LeaveButton"
                     Clicked="LeaveButton_Clicked"/>

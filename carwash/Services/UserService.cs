@@ -18,7 +18,7 @@ namespace carwash.Services
             else
                 return AuthorizationDebug(Phone, Password);
         }
-        public static (HttpStatusCode Status, string Token) Registration(string Phone, string Password, string CPassword, string Name = "", string Email = "")
+        public static (HttpStatusCode Status, string Token) Registration(string Phone, string Password, string CPassword, string Name, string Email="")
         {
             if (_public)
                 return RegistrationPublic(Phone, Password, CPassword, Name, Email);
@@ -74,7 +74,34 @@ namespace carwash.Services
                 Id = 0,
                 MainUserId = "99",
                 Phone = "+77777777777",
-                Settings = ""
+                Settings = new Settings()
+                {
+                    UserServices = new List<Service>()
+                    {
+                        new Service
+                        {
+                            Id = 0,
+                            Title = "Стрижка",
+                            Price = 3000,
+                            DurationInMinuts = 60
+                        },
+                        new Service
+                        {
+                            Id = 1,
+                            Title = "Подстричь концы",
+                            Price = 1300,
+                            DurationInMinuts = 15
+                        },
+                        new Service
+                        {
+                            Id = 2,
+                            Title = "Налысо",
+                            Price = 1000,
+                            DurationInMinuts = 10
+                        }
+                    }
+                }
+                //"{\"user_services\":[{\"id\":0,\"title\":\"Стрижка\",\"duration_minuts\":60,\"price\":3000},{\"id\": 1,\"title\": \"Подстричь концы\",\"duration_minuts\": 30,\"price\": 2500}]}"
             });
         }
         private static (HttpStatusCode Status, string Token) AuthorizationPublic(string Phone, string Password)

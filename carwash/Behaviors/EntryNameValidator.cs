@@ -3,7 +3,7 @@ using Xamarin.Forms;
 
 namespace carwash.Behaviors
 {
-    public class EntryTextValidator : Behavior<Entry>
+    public class EntryNameValidator : Behavior<Entry>
     {
         protected override void OnAttachedTo(Entry entry)
         {

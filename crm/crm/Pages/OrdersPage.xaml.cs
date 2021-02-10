@@ -19,40 +19,41 @@ namespace crm.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OrdersPage : ContentPage
     {
-        public ObservableCollection<OrderInfo> ordersInfo { get; }
+        public static ObservableCollection<OrderInfo> ordersInfoOnView { get; set; }
         public OrdersPage()
         {
             InitializeComponent();
-            ordersInfo = new ObservableCollection<OrderInfo>();
-            this.BindingContext = this;
-
+            ordersInfoOnView = new ObservableCollection<OrderInfo>();
+            //ApplicationData.GlobalOrderInfos = new ObservableCollection<OrderInfo>();         
             for (int i = 0; i < 13; i++)
-                ordersInfo.Add(new OrderInfo(DateTime.Today.AddHours(i + 9)));
+                //ApplicationData.GlobalOrderInfos.Add(new OrderInfo(DateTime.Today.AddHours(i + 9)));
+                ordersInfoOnView.Add(new OrderInfo(DateTime.Today.AddHours(i + 9)));
+            OrdersList.ItemsSource = ordersInfoOnView;
+            this.BindingContext = this;
             var orderInfosDB = DBService.GetSortedOrderForDateInfos();
             
             if (orderInfosDB.Count != 0)
             {
-                foreach (var info in ordersInfo)
+                foreach (var info in ordersInfoOnView)
+                //foreach (var info in ApplicationData.GlobalOrderInfos)
                 {
                     var currentOrder = orderInfosDB.FirstOrDefault(o => o.OrderDateOfReservation == info.OrderDateOfReservation);
                     if (currentOrder != null)
                         info.FillingInfo(currentOrder);
-                }           
-                
+                }                           
             }
         }
         private void OrdersDataPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            ordersInfo.Clear();
+            ordersInfoOnView.Clear();
             for (int i = 0; i < 13; i++)
-                ordersInfo.Add(new OrderInfo(OrdersDataPicker.Date.AddHours(i + 9)));
+                ordersInfoOnView.Add(new OrderInfo(OrdersDataPicker.Date.AddHours(i + 9)));
             var orderInfosDB = DBService.GetSortedOrderForDateInfos(OrdersDataPicker.Date);
             System.Diagnostics.Debug.WriteLine($"@orderInfosDB finded orders count - {orderInfosDB.Count}");
             
             if (orderInfosDB.Count != 0)
-            {
-                System.Diagnostics.Debug.WriteLine($"@orderInfosDB finded orders count - {ordersInfo.Count}");             
-                foreach (var info in ordersInfo)
+            {           
+                foreach (var info in ordersInfoOnView)
                 {
                     var currentOrder = orderInfosDB.FirstOrDefault(o => o.OrderDateOfReservation == info.OrderDateOfReservation);
                     if (currentOrder != null)
@@ -86,8 +87,8 @@ namespace crm.Pages
                         bool result = await DisplayAlert("Подтвердить действие", "Вы действительно хотите отменить запись?", "Да", "Нет");
                         if (result)
                         {
-                            DBService.DelOrderById((e.Item as OrderInfo).OrderId);
-                            OrderService.DelOrderById((e.Item as OrderInfo).OrderId, CurrentUserData.Token);
+                            DBService.DelOrder((e.Item as OrderInfo).OrderId);
+                            OrderService.DelOrder((e.Item as OrderInfo).OrderId, UserData.Token);
                             (e.Item as OrderInfo).ClearInfo();
                         }                         
                         break;

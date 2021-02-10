@@ -21,7 +21,7 @@
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
-                <RowDefinition Height="*"/>
+                
             </Grid.RowDefinitions>
             <Entry Placeholder="Введите имя"                  
                    x:Name="NamePlaceholder"
@@ -30,20 +30,16 @@
                    Keyboard="Text"
                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                 <Entry.Behaviors>
-                    <beh:EntryTextValidator/>
+                    <beh:EntryNameValidator/>
                 </Entry.Behaviors>
             </Entry>
             <Entry Text="+7" 
                    Placeholder="Введите телефон"                  
                    x:Name="PhonePlaceholder"
-                   MaxLength="17"
+                   MaxLength="12"
                    TextChanged="NamePlaceholder_TextChanged"
                    Keyboard="Telephone"
                    Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
-                <Entry.Behaviors>
-                    <!--<behaviorPack:MaskedBehavior Mask="+7(XXX)XXX-XX-XX" />-->
-                    <beh:EntryPhoneMask Mask="+7(XXX)XXX-XX-XX"/>
-                </Entry.Behaviors>
             </Entry>
             <Button Text="Добавить"
                     x:Name="AddNewClient"

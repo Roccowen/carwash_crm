@@ -55,12 +55,12 @@ namespace carwash.Services
         private static (HttpStatusCode Status, List<Worker> Workers) GetWorkersDebug(string token)
         {
             var Workers = new List<Worker>();
-            for (int i = 0; i < _random.Next(1, 10); i++)
+            for (int i = 1; i <= 10; i++)
             {
                 Workers.Add(new Worker()
                 {
-                    Id = WorkersCntInc(),
-                    Name = _names[_random.Next(0, 10)],
+                    Id = i,
+                    Name = _names[i],
                     UserId = 0
                 });
             }

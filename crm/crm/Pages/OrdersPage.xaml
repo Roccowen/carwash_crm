@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:data="clr-namespace:crm"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              x:Class="crm.Pages.OrdersPage"
@@ -19,8 +20,9 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
+            <!--ItemsSource="{Binding ordersInfo}"-->
+            <!--ItemsSource="{Binding Source={x:Static data:ApplicationData.GlobalOrderInfos}}"-->
             <ListView x:Name="OrdersList" 
-                      ItemsSource="{Binding ordersInfo}"
                       HasUnevenRows="True"
                       SelectionMode="None"
                       IsPullToRefreshEnabled="False"
@@ -28,7 +30,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout BackgroundColor="{Binding Color}">
+                            <StackLayout BackgroundColor="{Binding ColorLight}">
                                 <Label Text="{Binding ClientName, StringFormat='Клиент: {0}'}" />
                                 <Label Text="{Binding OrderDateOfReservation, StringFormat='Время: {0:HH:mm}'}"/>
                             </StackLayout>

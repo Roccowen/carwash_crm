@@ -28,7 +28,7 @@
                    Keyboard="Text"
                    Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
                 <Entry.Behaviors>
-                    <beh:EntryTextValidator/>
+                    <beh:EntryNameValidator/>
                 </Entry.Behaviors>
             </Entry>
             <Entry Placeholder="Введите телефон"                  

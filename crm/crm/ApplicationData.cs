@@ -24,11 +24,5 @@ namespace crm
         public static bool ClientServicePublic = false;
         public static string TokenType = "Bearer";
         //public static string CSSPath = "/Styles/Styles.css";
-        public void Initialization()
-        {
-            Clients = new ObservableCollection<Client>();
-            foreach (var c in DBService.GetClients())
-                
-        }
     }
 }

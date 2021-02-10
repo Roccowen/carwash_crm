@@ -5,6 +5,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -17,7 +18,7 @@ namespace crm.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OrderRegistrationPage : ContentPage
     {
-        public List<Client> Clients { get; set; }
+        public ObservableCollection<Client> Clients { get; set; }
         //public List<Worker> Workers { get; set; }
         private DateTime pickedDate { get; set; }
         private OrderInfo pickedOrderInfo { get; set; }
@@ -44,7 +45,7 @@ namespace crm.Pages
             pickedOrderInfo = _pickedOrderInfo;
             pickedDate = _pickedDateTime ?? _pickedDateTime.Value;
 
-            Clients = DBService.GetClients();
+            Clients = UserData.Clients;
             //Workers = DBService.GetWorkers();
 
             if (pickedOrderInfo.OrderPrice>0)
@@ -71,7 +72,7 @@ namespace crm.Pages
                 {
                     if (int.TryParse(PricePlaceholder.Text, out price) && price > 0)
                     {
-                        if (CurrentUserData.Token != "")
+                        if (UserData.Token != "")
                         {
                             var reservationDateTime = ReservationDataPicker.Date.Add(ReservationTimePicker.Time);
                             var client = CurrentClient;
@@ -79,9 +80,9 @@ namespace crm.Pages
                             //var worker = (Worker)WorkerPicker.SelectedItem;
                             (System.Net.HttpStatusCode Status, Order Order) order = (System.Net.HttpStatusCode.Unused, null);
                             if (!pickedOrderInfo.IsEmpty)
-                                order = OrderService.ChangeOrder(pickedOrderInfo.OrderId, CurrentUserData.Token, pickedOrderInfo.OrderDateOfReservation, client.Id, worker.Id, Convert.ToInt32(PricePlaceholder.Text), pickedOrderInfo.OrderType, pickedOrderInfo.OrderStatus);
+                                order = OrderService.ChangeOrder(pickedOrderInfo.OrderId, UserData.Token, pickedOrderInfo.OrderDateOfReservation, client.Id, worker.Id, Convert.ToInt32(PricePlaceholder.Text), pickedOrderInfo.OrderType, pickedOrderInfo.OrderStatus);
                             else
-                                order = OrderService.NewOrder(reservationDateTime, client.Id, worker.Id, price, CurrentUserData.Token);
+                                order = OrderService.NewOrder(reservationDateTime, client.Id, worker.Id, price, UserData.Token);
                             switch (order.Status)
                             {
                                 case System.Net.HttpStatusCode.Created:
@@ -122,7 +123,7 @@ namespace crm.Pages
 
         private async void ClientPickerButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new SearchOrCreatePage(this));
+            await Navigation.PushModalAsync(new ClientsSearchPage(this));
         }
     }
 }

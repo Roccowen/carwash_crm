@@ -1,29 +1,32 @@
 ﻿using carwash.Models;
+using carwash.Services;
 using System;
 using Xamarin.Essentials;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace carwash.Data
 {
-    public static class CurrentUserData
+    public static class UserData
     {
         public static string Token
         {
             get
-            {                
+            {
                 try
                 {
-                    return SecureStorage.GetAsync("CurrentUserToken").Result;
+                    return SecureStorage.GetAsync("UserToken").Result;
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"@Error {ex.Message}");
                     object token = "";
-                    if (App.Current.Properties.TryGetValue("CurrentUserToken", out token))
+                    if (App.Current.Properties.TryGetValue("UserToken", out token))
                         return (string)token;
                     else
                     {
-                        App.Current.Properties.Add("CurrentUserToken", (string)token);
+                        App.Current.Properties.Add("UserToken", (string)token);
                         return (string)token;
                     }
                 }
@@ -32,13 +35,13 @@ namespace carwash.Data
             {
                 try
                 {
-                    SecureStorage.SetAsync("CurrentUserToken", value);
+                    SecureStorage.SetAsync("UserToken", value);
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"@Error {ex.Message}");
-                    App.Current.Properties["CurrentUserToken"] = value;
-                }               
+                    App.Current.Properties["UserToken"] = value;
+                }
             }
         }
         public static int Id
@@ -131,38 +134,50 @@ namespace carwash.Data
                 App.Current.Properties["CurrentUserMainUserId"] = value;
             }
         }
-        public static string Settings
+        private static Settings settings;
+        public static Settings Settings
         {
             get
             {
-                object settings = "";
-                if (App.Current.Properties.TryGetValue("CurrentUserSettings", out settings))
-                    return (string)settings;
-                else
-                {
-                    App.Current.Properties.Add("CurrentUserSettings", (string)settings);
-                    return (string)settings;
-                }
+                return settings;
             }
             set
             {
-                App.Current.Properties["CurrentUserSettings"] = value;
+                settings = value;
             }
         }
+        public static ObservableCollection<Client> Clients { get; set; }
+        public static ObservableCollection<Worker> Workers { get; set; }
         public static void ClearData()
         {
             App.Current.Properties.Clear();
             SecureStorage.RemoveAll();
+            Clients = null;
+            Workers = null;
         }
         public static void NewUserData(User user)
         {
-            CurrentUserData.Name = user.Name;
-            CurrentUserData.Id = user.Id;
-            CurrentUserData.MainUserId = user.MainUserId;            
-            CurrentUserData.Phone = user.Phone;
-            CurrentUserData.Settings = user.Settings;
-            CurrentUserData.Email = user.Email;
+            UserData.Name = user.Name;
+            UserData.Id = user.Id;
+            UserData.MainUserId = user.MainUserId;            
+            UserData.Phone = user.Phone;
+            UserData.Settings = user.Settings;
+            UserData.Email = user.Email;
+            
+            Clients = new ObservableCollection<Client>();
+            Workers = new ObservableCollection<Worker>();
         }
-
+        public static void AddWorkers(List<Worker> workers)
+        {
+            workers.OrderBy(w => w.Name).ToList().ForEach(w => Workers.Add(w));
+        }
+        public static void AddClients(List<Client> clients)
+        {
+            var cl = clients.OrderBy(c => c.Name);
+            foreach (var c in cl)
+            {
+                Clients.Add(c);
+            }
+        }
     }
 }

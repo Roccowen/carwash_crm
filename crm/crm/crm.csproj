@@ -27,8 +27,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Pages\AuthorizationPage.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
+    <Compile Update="Pages\ClientsSearchPage.xaml.cs">
+      <DependentUpon>ClientsSearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\ServiceRegistrationPage.xaml.cs">
+      <DependentUpon>ServiceRegistrationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\ServiceSearchPage.xaml.cs">
+      <DependentUpon>ServiceSearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\UserAuthorizationPage.xaml.cs">
+      <DependentUpon>UserAuthorizationPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Pages\ClientRegistrationPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
@@ -42,14 +51,14 @@
     <Compile Update="Pages\OrdersPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Pages\RegistrationPage.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
+    <Compile Update="Pages\UserRegistrationPage.xaml.cs">
+      <DependentUpon>UserRegistrationPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Pages\SettingsPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Pages\TabbedMainPage.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
+    <Compile Update="Pages\TabbedNavigation.xaml.cs">
+      <DependentUpon>TabbedNavigation.xaml</DependentUpon>
     </Compile>
     <Compile Update="Pages\WorkerRegistrationPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
@@ -57,13 +66,19 @@
     <Compile Update="Pages\WorkersPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Pages\СlientsPage.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
+    <Compile Update="Pages\ClientsPage.xaml.cs">
+      <DependentUpon>ClientsPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Pages\SearchOrCreatePage.xaml">
+    <EmbeddedResource Update="Pages\ClientsSearchPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\ServiceRegistrationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\ServiceSearchPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="styles.css">

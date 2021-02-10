@@ -18,7 +18,8 @@ namespace carwash.Models
         private int workerId;
         private string workerName;
         private bool isEmpty;
-        private Color color;
+        private Color colorDark;
+        private Color colorLight;
         public int ClientId 
         {
             get
@@ -185,21 +186,36 @@ namespace carwash.Models
                 }
             }
         }
-        public Color Color
+        public Color ColorDark
         {
             get
             {
-                return color;
+                if (this.IsEmpty)
+                    return emptyInfoDark;
+                else
+                    return fullInfoDark;
+            }
+        }
+        public Color ColorLight
+        {
+            get
+            {
+                return colorLight;
             }
             set
             {
-                if (color != value)
+                if (colorLight != value)
                 {
-                    color = value;
-                    OnPropertyChanged("Color");
+                    colorLight = value;
+                    OnPropertyChanged("ColorLight");
                 }
             }
         }
+        private Color emptyInfoLight = Color.FromArgb(80, 206, 212, 255);
+        private Color emptyInfoDark = Color.FromArgb(100, 120, 180, 255);
+        
+        private Color fullInfoLight = Color.FromArgb(80, 255, 206, 206);
+        private Color fullInfoDark = Color.FromArgb(100, 255, 80, 80);
         public OrderInfo(Order order, Client client, Worker worker)
         {
             OrderDateOfReservation = order.DateOfReservation;
@@ -214,7 +230,7 @@ namespace carwash.Models
             WorkerId = worker.Id;
             WorkerName = worker.Name;
             IsEmpty = false;
-            Color = fullInfo;
+            ColorLight = fullInfoLight;
         }
         public OrderInfo(DateTime DateOfReservation)
         {
@@ -230,7 +246,7 @@ namespace carwash.Models
             WorkerId = -1;
             WorkerName = "";
             IsEmpty = true;
-            Color = emptyInfo;
+            ColorLight = emptyInfoLight;
         }
         public void FillingInfo(OrderInfo newInfo)
         {
@@ -245,7 +261,7 @@ namespace carwash.Models
             WorkerId = newInfo.WorkerId;
             WorkerName = newInfo.WorkerName;
             IsEmpty = false;
-            Color = fullInfo;
+            ColorLight = fullInfoLight;
         }
         public void ClearInfo()
         {
@@ -260,10 +276,8 @@ namespace carwash.Models
             WorkerId = -1;
             WorkerName = "";
             IsEmpty = true;
-            Color = emptyInfo;
+            ColorLight = emptyInfoLight;
         }
-        private Color emptyInfo = Color.FromArgb(80, 206, 212, 255);
-        private Color fullInfo = Color.FromArgb(80, 255, 206, 206);
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string prop = "")
         {

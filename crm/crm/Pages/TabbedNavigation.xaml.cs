@@ -16,15 +16,16 @@ using System.Threading;
 namespace crm.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TabbedMainPage : TabbedPage
+    public partial class TabbedNavigation : TabbedPage
     {
-        public TabbedMainPage()
+        public TabbedNavigation(List<Client> clients, List<Worker> workers)
         {
-            InitializeComponent();           
+            InitializeComponent();
+            UserData.AddClients(clients);
+            UserData.AddWorkers(workers);
         }
         protected override bool OnBackButtonPressed()
         {
-            // Do your magic here
             return false;
         }
     }

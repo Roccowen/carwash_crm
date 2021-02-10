@@ -16,7 +16,7 @@ namespace carwash.Services
         private static bool _public = AppData.ClientServicePublic;
         private static int OrdersCntInc(int i = 1) => AppData.OrdersCount += i;
         private static int OrdersCntGet() => AppData.OrdersCount;
-        public static (HttpStatusCode Status, string message) DelOrderById(int id, string token)
+        public static (HttpStatusCode Status, string message) DelOrder(int id, string token)
         {
             if (_public)
                 return DelOrderByIdPublic(id, token);
@@ -80,13 +80,13 @@ namespace carwash.Services
         private static (HttpStatusCode Status, List<Order> Orders) GetOrdersDebug(string token)
         {
             var Orders = new List<Order>();
-            for (int i = 0; i < _random.Next(15, 40); i++)
+            for (int i = 0; i < 30; i++)
             {
                 Orders.Add(new Order()
                 {
                     Id = OrdersCntInc(),
-                    ClientId = _random.Next(1, AppData.ClientsCount),
-                    WorkerId = _random.Next(1, AppData.WorkersCount),
+                    ClientId = _random.Next(1, 20),
+                    WorkerId = _random.Next(1, 10),
                     Price = _random.Next(1, 50) * 100,
                     Type = "full",
                     Status = "0",
@@ -287,7 +287,26 @@ namespace carwash.Services
                 return (response.StatusCode, null);
         }
         private static Random _random = new Random();
-        private static DateTime GetRandomDay() => DateTime.Today.AddDays(_random.Next(-3, 3)).AddHours(_random.Next(9, 19));
+        private static int hoursShift = 0;
+        private static int daysShift = 0;
+        private static int HoursShift { 
+            get
+            {
+                int dayHoursCnt;
+                while (true)
+                {
+                    hoursShift += _random.Next(1, 3);
+                    if (hoursShift >= 24)
+                    {
+                        hoursShift = 0;
+                        daysShift += 1;
+                    }
+                    if (hoursShift >= 9 && 19 >= hoursShift)
+                        return hoursShift;
+                }                
+            }
+        }
+        private static DateTime GetRandomDay() => DateTime.Today.AddDays(daysShift).AddHours(HoursShift);
         private static (HttpStatusCode Status, Order Order) NewOrderNW(DateTime reserveDate, int clientId, int workerId, int price, string token, string type = "full", int status = 0)
         {
             var request = new RestRequest(@"/api/order", Method.POST)

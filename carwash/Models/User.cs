@@ -16,6 +16,6 @@ namespace carwash.Models
         [JsonPropertyName("email_vertified_at")]
         public string MainUserId { get; set; }
         [JsonPropertyName("settings")]
-        public string Settings { get; set; }
+        public Settings Settings { get; set; }
     }
 }

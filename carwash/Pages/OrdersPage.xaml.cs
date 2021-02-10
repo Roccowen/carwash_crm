@@ -24,13 +24,10 @@ namespace carwash.Pages
                 .ToList();
             if (orderInfosDB.Count != 0)
             {
-                OrdersIsNullLabel.IsVisible = false;
                 foreach (var info in orderInfosDB)
                     ordersInfo.Add(info);
                 this.BindingContext = this;
             }
-            else
-                OrdersIsNullLabel.IsVisible = true;
         }
         private void OrdersDataPicker_Unfocused(object sender, FocusEventArgs e)
         {
@@ -44,14 +41,9 @@ namespace carwash.Pages
             System.Diagnostics.Debug.WriteLine($"@ orderInfosDB count after - {orderInfosDB.Count}");
             if (orderInfosDB.Count != 0)
             {
-                OrdersIsNullLabel.IsVisible = false;
                 foreach (var info in orderInfosDB)
                     ordersInfo.Add(info);
                 this.BindingContext = this;
-            }
-            else
-            {
-                OrdersIsNullLabel.IsVisible = true;
             }
         }
         private async void NewOrderButton_Clicked(object sender, EventArgs e)

@@ -30,7 +30,7 @@ namespace crm.Pages
             if (result)
             {               
                 DBService.DropData();
-                CurrentUserData.ClearData();
+                UserData.ClearData();
                 ApplicationData.ClientsCount = 0; //only debug
                 ApplicationData.OrdersCount = 0;
                 ApplicationData.WorkersCount = 0;
@@ -39,7 +39,12 @@ namespace crm.Pages
         }
         private async void AddNewClietnButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new ClientRegistrationPage(null));
+            await Navigation.PushModalAsync(new ClientRegistrationPage());
+        }
+
+        private async void ServiceSettingsButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new ServiceSearchPage());
         }
     }
 }

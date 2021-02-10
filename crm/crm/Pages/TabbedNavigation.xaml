@@ -9,7 +9,7 @@
             NavigationPage.HasNavigationBar="False" 
             NavigationPage.HasBackButton="False"
             mc:Ignorable="d"
-            x:Class="crm.Pages.TabbedMainPage">
+            x:Class="crm.Pages.TabbedNavigation">
     <crmpages:OrdersPage IconImageSource="orders.png"></crmpages:OrdersPage>
 
     <crmpages:СlientsPage IconImageSource="user.png"></crmpages:СlientsPage>

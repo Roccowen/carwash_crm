@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="crm.Pages.SearchOrCreatePage">
+             x:Class="crm.Pages.ServiceSearchPage">
     <ContentPage.Resources>
         <StyleSheet Source = "/styles.css"/>
     </ContentPage.Resources>
@@ -12,42 +12,49 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*" />
-                <RowDefinition Height="50" />
-                <RowDefinition Height="50" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+
             </Grid.RowDefinitions>
             <ListView
-                x:Name="ClientsList"
-                ItemsSource="{Binding ClientsCollect}"
+                x:Name="ServiceList"
+                ItemsSource="{Binding ServiceCollects}"
                 HasUnevenRows="True"
                 SelectionMode="None"
                 IsPullToRefreshEnabled="False"
                 VerticalScrollBarVisibility="Always"
-                ItemTapped="ClientsList_ItemTapped"
-                Grid.Row="0" Grid.ColumnSpan="2">
+                ItemTapped="ServiceList_ItemTapped"
+                Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
-                                <Label Text="{Binding Name}" />
-                                <Label Text="{Binding Phone, StringFormat='+7{0}'}"/>
+                                <Label Text="{Binding Title}" />
+                                <Label Text="{Binding Price, StringFormat='Цена: ₸{0}'}"/>
+                                <Label Text="{Binding DurationInMinuts, StringFormat='Продолжительность: {0} минут'}"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Entry Placeholder="Поиск по клиентам"
-                   x:Name="ClientFoundEntry"
-                   TextChanged="ClientFoundEntry_TextChanged"
+            <Label Text="Услуг нет"
+                   x:Name="ServicesIsNullLabel"
+                   VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand"
+                   IsVisible="False"
+                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
+            <Entry Placeholder="Поиск по услугам"
+                   x:Name="ServiceFoundEntry"
+                   TextChanged="ServiceFoundEntry_TextChanged" 
                    Grid.Row="1"  Grid.ColumnSpan="2"/>
             <Button Text="Назад" 
                     x:Name="BackButton"
                     Clicked="BackButton_Clicked"
                     Grid.Row="2" Grid.Column="1"/>
-            <Button Text="Добавить клиента"
-                    x:Name="AddClientButton"
-                    Clicked="AddClientButton_Clicked"
+            <Button Text="Добавить услугу"
+                    x:Name="AddServiceButton"
+                    Clicked="AddServiceButton_Clicked"
                     Grid.Row="2" Grid.Column="0"/>
         </Grid>
     </ContentPage.Content>

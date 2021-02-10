@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:data="clr-namespace:crm"
              mc:Ignorable="d"
              x:Class="crm.Pages.СlientsPage">
     <ContentPage.Resources>
@@ -10,14 +11,13 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <SearchBar x:Name="ClientsSearchBar"
-                       TextChanged="ClientsSearchBar_TextChanged"
-                       SearchButtonPressed="ClientsSearchBar_SearchButtonPressed"
-                       Placeholder="Поиск клиентов..."/>
+
             <ListView x:Name="ClientsListView"
                       ItemsSource="{Binding Clients}"
                       HasUnevenRows="True"
-                      SelectionMode="None">
+                      SelectionMode="None"
+                      ItemTapped="ClientsListView_ItemTapped"
+                      VerticalScrollBarVisibility="Always">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -29,6 +29,13 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <SearchBar x:Name="ClientsSearchBar"
+                       TextChanged="ClientsSearchBar_TextChanged"
+                       SearchButtonPressed="ClientsSearchBar_SearchButtonPressed"
+                       Placeholder="Поиск клиентов..."/>
+            <Button Text="Добавить нового клиента"
+                    x:Name="AddNewClietnButton"
+                    Clicked="AddNewClietnButton_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

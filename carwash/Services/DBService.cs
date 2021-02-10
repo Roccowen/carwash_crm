@@ -80,7 +80,7 @@ namespace carwash.Services
             if (c is null)
             {
                 context.Clients.Add(client);
-                System.Diagnostics.Debug.WriteLine($"@Added new client {client.Id}-{client.Name}");
+                System.Diagnostics.Debug.WriteLine($"@AddOrRewriteClient(Client client) Added new client {client.Id}-{client.Name}");
                 context.SaveChanges();
             }
             else
@@ -89,7 +89,7 @@ namespace carwash.Services
                 c.CarInformation = client.CarInformation;
                 c.Name = client.Name;
                 
-                System.Diagnostics.Debug.WriteLine($"@Not added new client {client.Id}-{client.Name}");
+                System.Diagnostics.Debug.WriteLine($"@AddOrRewriteClient(Client client) Not added client {client.Id}-{client.Name}");
                 context.SaveChanges();
             }
         }
@@ -162,19 +162,61 @@ namespace carwash.Services
         public static List<Worker> GetWorkers()
         {
             DBContext context = new DBContext();
-            return context.Workers.ToList();
+            return context.Workers.OrderBy(c => c.Name).ToList();
         }
-        public static void DelOrderById(int id)
+        public static void DelOrder(int id)
+        {           
+            try
+            {
+                DBContext context = new DBContext();
+                var o = context.Orders.Find(id);
+                context.Orders.Remove(o);
+                context.SaveChanges();
+                System.Diagnostics.Debug.WriteLine($"@DelOrder Suc del-{o.Id}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"@DelOrder {ex.Message}");
+                throw;
+            }
+            
+        }
+        public static void DelClientOrders(int id)
+        {
+            try
+            {
+                DBContext context = new DBContext();
+                var orderToRemove = context.Orders.Where(o => o.ClientId == id).ToList();
+                context.RemoveRange(orderToRemove);
+                context.SaveChanges();
+                System.Diagnostics.Debug.WriteLine($"@DelClientOrders Suc delCnt-{orderToRemove.Count}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"@DelOrder {ex.Message}");
+                throw;
+            }            
+        }
+        public static void DelClientOrders(Client client)
+        {
+            DelClientOrders(client.Id);
+        }
+        public static void DelOrder(Order order)
         {
             DBContext context = new DBContext();
-            var o = context.Orders.Find(id);
-            context.Orders.Remove(o);
+            context.Orders.Remove(order);
+            context.SaveChanges();
+        }
+        public static void DelClient(Client client)
+        {
+            DBContext context = new DBContext();
+            context.Clients.Remove(client);
             context.SaveChanges();
         }
         public static List<Client> GetClients()
         {
             DBContext context = new DBContext();
-            return context.Clients.ToList();
+            return context.Clients.OrderBy(c => c.Name).ToList();
         }
         public static List<OrderInfo> GetSortedOrderForDateInfos(DateTime? date = null)
         {           

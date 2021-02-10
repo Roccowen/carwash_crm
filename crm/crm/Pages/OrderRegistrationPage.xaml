@@ -25,7 +25,7 @@
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
-                <RowDefinition Height="*" />
+                
             </Grid.RowDefinitions>
             <Label Text="Выберите клиента:"
                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
@@ -51,7 +51,6 @@
                 x:Name="ReservationTimePicker" 
                 IsEnabled="False"
                 Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"/>
-
             <Button Text="Добавить"
                     x:Name="AddNewOrder"
                     Clicked="AddNewOrder_Clicked"

@@ -18,6 +18,7 @@ namespace carwash.Models
         [JsonPropertyName("user_id")]
         public int UserId { get; set; }
         [JsonPropertyName("price")]
+        
         public int Price { get; set; }
         [JsonPropertyName("type")]
         public string Type { get; set; }
